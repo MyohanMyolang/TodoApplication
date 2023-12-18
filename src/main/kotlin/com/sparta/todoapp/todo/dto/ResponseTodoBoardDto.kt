@@ -1,7 +1,9 @@
 package com.sparta.todoapp.todo.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class ResponseTodoBoardDto(
-    private val id:Long,
-    private val ownerName: String
+    @field:JsonProperty("id") private val id: Long,
+    @field:JsonProperty("ownerName") private val ownerName: String
 ) {
 }
