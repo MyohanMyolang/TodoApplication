@@ -1,0 +1,22 @@
+server:
+  port: 9001
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_ID}
+    password: ${POSTGRES_PW}
+logging:
+  level:
+    com.zaxxer.hikari: TRACE
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    p6spy: info
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
