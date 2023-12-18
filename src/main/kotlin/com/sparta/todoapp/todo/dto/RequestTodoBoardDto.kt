@@ -1,5 +1,13 @@
 package com.sparta.todoapp.todo.dto
 
+import com.sparta.todoapp.todo.entity.TodoBoard
+import jakarta.validation.constraints.NotBlank
+
 class RequestTodoBoardDto {
-    val ownerName: String = "";
+
+    @NotBlank(message = "ownerName은 무조건 입력 되어야 합니다.")
+    val ownerName: String? = null;
+
+    fun convertToEntity(): TodoBoard = TodoBoard(ownerName = this.ownerName!!);
+
 }
