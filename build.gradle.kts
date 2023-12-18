@@ -5,9 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
-    kotlin("plugin.allopen") version "1.9.21"
-    kotlin("plugin.jpa") version "1.9.21"
-
+    kotlin("plugin.allopen") version "1.9.20"
+    kotlin("plugin.jpa") version "1.9.20"
 }
 
 group = "com.sparta"
@@ -37,6 +36,8 @@ dependencies {
     // setting
     implementation("me.paulschwarz:spring-dotenv:4.0.0")
 
+    // validate
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
