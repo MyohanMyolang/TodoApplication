@@ -13,13 +13,13 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.util.*
 
-@Service
-class TodoServiceImpl @Autowired constructor(
-    private val todoBoardRepository: TodoBoardRepository,
-    private val todoCardRepository: TodoCardRepository
-) : TodoService {
+    @Service
+    class TodoServiceImpl @Autowired constructor(
+        private val todoBoardRepository: TodoBoardRepository,
+        private val todoCardRepository: TodoCardRepository
+    ) : TodoService {
 
-    override fun addTodoBoard(todoBoard: TodoBoard): ResponseTodoBoardDto {
+        override fun addTodoBoard(todoBoard: TodoBoard): ResponseTodoBoardDto {
         return todoBoardRepository.save(todoBoard).convertToResponseDto();
     }
 
@@ -40,5 +40,11 @@ class TodoServiceImpl @Autowired constructor(
     override fun updateTodoCardById(id: Long, updateData: Map<String, Any>): ResponseTodoCardDetailDto {
         val foundCard = todoCardRepository.findByIdOrNull(id) ?: throw TODO("NotFoundTargetException 정의하고 던지기")
         return todoCardRepository.save(foundCard.updateValue(updateData)).convertDetailDto()
+    }
+
+    override fun deleteTodoCardById(id: Long): ResponseTodoCardDetailDto {
+        val foundCard = todoCardRepository.findByIdOrNull(id) ?: throw TODO("NotFoundTargetException")
+        todoCardRepository.delete(foundCard);
+        return foundCard.convertDetailDto()
     }
 }
