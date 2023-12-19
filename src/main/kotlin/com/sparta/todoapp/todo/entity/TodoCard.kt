@@ -3,6 +3,7 @@ package com.sparta.todoapp.todo.entity
 import com.sparta.todoapp.todo.dto.ResponseTodoCardDetailDto
 import com.sparta.todoapp.todo.dto.ResponseTodoCardDto
 import jakarta.persistence.*
+import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
 
 
@@ -39,6 +40,16 @@ class TodoCard {
         this.title = title
         this.isCompleted = isCompleted;
         this.todoCardDetail = todoCardDetail;
+    }
+
+    fun updateValue(updateData: Map<String, Any>): TodoCard {
+        updateData.keys.forEach {
+            when (it) {
+                "title" -> title = updateData[it] as String? ?: throw TODO("요청 받은 key에 value가 Null");
+                else -> todoCardDetail.updateValue(it, updateData[it] ?: throw TODO("요청 받은 key에 value가 Null"))
+            }
+        }
+        return this
     }
 
     fun convertDto() = ResponseTodoCardDto(id!!, title, isCompleted, date)
