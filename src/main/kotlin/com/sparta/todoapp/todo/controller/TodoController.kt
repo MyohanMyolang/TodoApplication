@@ -1,20 +1,13 @@
 package com.sparta.todoapp.todo.controller
 
-import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
-import com.sparta.todoapp.todo.dto.RequestTodoCardDto
-import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
+import com.sparta.todoapp.todo.dto.*
 import com.sparta.todoapp.todo.entity.TodoCard
 import com.sparta.todoapp.todo.service.TodoService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * NOTE: 2023-12-18 21:04:42
@@ -62,4 +55,17 @@ class TodoController @Autowired constructor(
     /**
      * NOTE: Board Update의 경우 Map으로 받아온 후, Entity에 있는 updateData를 통하여 그에 맞는 value를 할당 시킨다.
      */
+    @PatchMapping("/card/{id}")
+    fun updateTodoCardById(
+        @PathVariable id: Long,
+        @RequestBody updateData: Map<String, Any>
+    ): ResponseEntity<ResponseTodoCardDetailDto> {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(todoService.updateTodoCardById(id, updateData));
+    }
+
+    @DeleteMapping("/card")
+    fun deleteCardById() {
+
+    }
 }

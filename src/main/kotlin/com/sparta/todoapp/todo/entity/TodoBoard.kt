@@ -8,8 +8,10 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import org.hibernate.annotations.DynamicUpdate
 
 @Entity
+@DynamicUpdate
 class TodoBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,25 +28,21 @@ class TodoBoard {
     }
 
     /**
-     * @param updateValueMap key는 Field명과 일치해야 한다.
+     * @param updateData key는 Field명과 일치해야 한다.
      */
-    fun updateValue(updateValueMap: Map<String, Any>) {
-        try {
-            updateValueMap.keys.forEach {
-                when (it) {
-                    "ownerName" -> ownerName = updateValueMap[it] as String;
-                    else -> throw Exception("")
-                }
+    fun updateValue(updateData: Map<String, Any>) {
+        updateData.keys.forEach {
+            when (it) {
+                "ownerName" -> ownerName = updateData[it] as String;
+                else -> throw TODO("BadUpdateRequestException 정의 후 it의 정보 전달")
             }
-        } catch (e: Exception) {
-            TODO("Throw Type Cast Error");
         }
     }
 
     fun convertToResponseDto(): ResponseTodoBoardDto {
         val dtoList = mutableListOf<ResponseTodoCardDto>();
 
-        todoCard.forEach{
+        todoCard.forEach {
             dtoList.add(it.convertDto());
         }
 

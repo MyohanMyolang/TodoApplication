@@ -1,7 +1,7 @@
 package com.sparta.todoapp.todo.entity
 
 import jakarta.persistence.*
-import java.time.LocalDateTime
+import org.hibernate.annotations.DynamicUpdate
 
 @Entity
 class TodoCardDetail {
@@ -20,5 +20,13 @@ class TodoCardDetail {
     constructor(descript: String, writer: String) {
         this.writer = writer;
         this.descript = descript;
+    }
+
+    fun updateValue(key: String, updateData: Any) {
+        when (key) {
+            "writer" -> writer = updateData as String;
+            "descript" -> descript = updateData as String;
+            else -> throw TODO("BadUpdateRequestException 정의 후 it의 정보 전달")
+        }
     }
 }
