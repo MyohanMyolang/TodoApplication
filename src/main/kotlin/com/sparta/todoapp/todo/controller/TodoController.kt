@@ -3,8 +3,7 @@ package com.sparta.todoapp.todo.controller
 import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.dto.RequestTodoCardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
-import com.sparta.todoapp.todo.entity.TodoBoard
-import com.sparta.todoapp.todo.entity.TodoList
+import com.sparta.todoapp.todo.entity.TodoCard
 import com.sparta.todoapp.todo.service.TodoService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -38,20 +38,25 @@ class TodoController @Autowired constructor(
              * @return 등록 된 이후의 board의 정보를 반환한다.
              */
     fun createTodoBoard(@RequestBody @Valid requestTodoBoardDto: RequestTodoBoardDto): ResponseEntity<ResponseTodoBoardDto> {
-
-        val todoBoard = todoService.addTodoBoard(requestTodoBoardDto.convertToEntity());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(todoBoard.convertToResponseDto());
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(todoService.addTodoBoard(requestTodoBoardDto.convertToEntity()));
     }
 
-    @GetMapping("/board/{page}")
-    fun getBoardAndTodoList(){
-
+    @GetMapping("/board")
+    fun getBoardAndTodoList(
+        @RequestParam(required = false, defaultValue = "1") page: Int,
+        @RequestParam(required = false, defaultValue = "10") size: Int
+    ): ResponseEntity<List<ResponseTodoBoardDto>> {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(todoService.getTodoBoardList(page, size));
     }
 
-    @PostMapping
-    fun addTodoCard(@RequestBody requestTodoCardDto: RequestTodoCardDto): ResponseEntity<RequestTodoCardDto> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(todoService.addTodoCard(requestTodoCardDto as TodoList))
+    // --Card---------------------------------------------------------------------------------------------------
+
+    @PostMapping("/card")
+    fun addTodoCard(@RequestBody @Valid requestTodoCardDto: RequestTodoCardDto): ResponseEntity<Any> {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(todoService.addTodoCard(requestTodoCardDto.convertToEntity()))
     }
 
     /**
