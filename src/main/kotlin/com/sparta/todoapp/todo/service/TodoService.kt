@@ -21,4 +21,6 @@ interface TodoService {
     fun getTodoBoardList(page: Int, size: Int): List<ResponseTodoBoardDto>
 
     fun updateTodoCardById(id: Long, updateData: Map<String, Any>): ResponseTodoCardDetailDto
+    fun deleteTodoCardById(id: Long): ResponseTodoCardDetailDto
+
 }
