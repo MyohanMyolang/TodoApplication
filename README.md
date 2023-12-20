@@ -23,6 +23,11 @@
 - ## 선택한 할 일 삭제 기능
     - 선택한 게시글을 삭제할 수 있습니다.
 
+## ERD
+![image](https://github.com/MyohanMyolang/TodoApplication/assets/85920191/02a78baa-fe2b-47fb-bb00-dbed58da82a1)
+
+## Swagger
+
 ---
 
 # Step 2
