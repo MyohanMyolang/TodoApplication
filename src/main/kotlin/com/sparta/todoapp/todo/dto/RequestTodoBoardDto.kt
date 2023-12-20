@@ -8,6 +8,5 @@ class RequestTodoBoardDto {
     @NotBlank(message = "ownerName은 무조건 입력 되어야 합니다.")
     val ownerName: String? = null;
 
-    fun convertToEntity(): TodoBoard = TodoBoard(ownerName = this.ownerName!!);
 
 }

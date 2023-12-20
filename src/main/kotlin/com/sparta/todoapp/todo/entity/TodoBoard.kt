@@ -1,13 +1,10 @@
 package com.sparta.todoapp.todo.entity
 
+import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoCardDto
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
+import jakarta.persistence.*
+import org.hibernate.annotations.BatchSize
 import org.hibernate.annotations.DynamicUpdate
 
 @Entity
@@ -15,12 +12,14 @@ import org.hibernate.annotations.DynamicUpdate
 class TodoBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null;
+    private val id: Long? = null
+
+    fun getId() = id;
 
     @Column(name = "owner_name")
     private var ownerName: String;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
     private val todoCard: List<TodoCard> = mutableListOf();
 
     constructor(ownerName: String) {
@@ -39,7 +38,7 @@ class TodoBoard {
         }
     }
 
-    fun convertToResponseDto(): ResponseTodoBoardDto {
+    fun convertToResponseDto(todoCard: List<TodoCard>): ResponseTodoBoardDto {
         val dtoList = mutableListOf<ResponseTodoCardDto>();
 
         todoCard.forEach {
@@ -47,5 +46,15 @@ class TodoBoard {
         }
 
         return ResponseTodoBoardDto(id = this.id!!, ownerName = this.ownerName, todoCardList = dtoList)
+    }
+
+    fun convertToResponseDto(): ResponseTodoBoardDto {
+        val dtoList = mutableListOf<ResponseTodoCardDto>();
+
+        return ResponseTodoBoardDto(id = this.id!!, ownerName = this.ownerName)
+    }
+
+    companion object {
+        fun convertToEntity(dto: RequestTodoBoardDto): TodoBoard = TodoBoard(ownerName = dto.ownerName!!);
     }
 }

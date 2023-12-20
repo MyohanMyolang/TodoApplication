@@ -41,6 +41,10 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+
 }
 
 tasks.withType<KotlinCompile> {
