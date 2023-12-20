@@ -11,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
 
-    @Service
-    class TodoServiceImpl @Autowired constructor(
-        private val todoBoardRepository: TodoBoardRepository,
-        private val todoCardRepository: TodoCardRepository
-    ) : TodoService {
+@Service
+class TodoServiceImpl @Autowired constructor(
+    private val todoBoardRepository: TodoBoardRepository,
+    private val todoCardRepository: TodoCardRepository
+) : TodoService {
 
-        override fun addTodoBoard(todoBoard: TodoBoard): ResponseTodoBoardDto {
+    override fun addTodoBoard(todoBoard: TodoBoard): ResponseTodoBoardDto {
         return todoBoardRepository.save(todoBoard).convertToResponseDto();
     }
 

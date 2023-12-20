@@ -65,7 +65,7 @@ class TodoController @Autowired constructor(
     }
 
     @DeleteMapping("/card/{id}")
-    fun deleteTodoCardById(@PathVariable id:Long): ResponseEntity<ResponseTodoCardDetailDto> {
+    fun deleteTodoCardById(@PathVariable id: Long): ResponseEntity<ResponseTodoCardDetailDto> {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(todoService.deleteTodoCardById(id))
     }

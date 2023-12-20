@@ -17,7 +17,7 @@ class RequestTodoCardDto {
     @NotNull(message = "제목은 필수 입니다.")
     val title: String? = null;
 
-    fun convertToEntity():TodoCard {
+    fun convertToEntity(): TodoCard {
         val todoCardDetail = TodoCardDetail(writer = writer!!, descript = descript!!)
         return TodoCard(ownerId = targetBoardId!!, title = title!!, todoCardDetail = todoCardDetail)
     }
