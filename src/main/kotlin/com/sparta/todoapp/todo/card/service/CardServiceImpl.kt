@@ -8,6 +8,7 @@ import com.sparta.todoapp.todo.exception.NotFoundTargetException
 import com.sparta.todoapp.todo.card.repository.TodoCardRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -63,5 +64,13 @@ class CardServiceImpl @Autowired constructor(
             todoCardRepository.findByIdOrNull(id) ?: throw NotFoundTargetException("해당 Todo Card가 존재하지 않습니다.")
         todoCardRepository.delete(foundCard);
         return foundCard.convertDetailDto()
+    }
+
+    fun getSortedCardList(id:Long, sort:String){
+        when(sort) {
+            "asc" -> todoCardRepository.findAllByBoardIdOrderByDateAsc(PageRequest.of(0, 5), id)
+            "desc" -> todoCardRepository.findAllByBoardIdOrderByDateDesc(PageRequest.of(0, 5), id)
+            else -> TODO("해당되는 sort가 존재하지 않는 메세지 던지기 NotFoundTag")
+        }
     }
 }

@@ -4,7 +4,7 @@ import com.sparta.todoapp.auth.member.entity.Member
 import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
-import com.sparta.todoapp.todo.entity.TodoBoard
+import com.sparta.todoapp.todo.entity.TodoBoardEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -21,7 +21,7 @@ class TodoCard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board", referencedColumnName = "id", insertable = false, updatable = false)
-    val board: TodoBoard? = null;
+    val board: TodoBoardEntity? = null;
 
     @Column(name = "title")
     private var title: String;

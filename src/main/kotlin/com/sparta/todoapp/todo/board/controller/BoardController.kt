@@ -1,10 +1,11 @@
 package com.sparta.todoapp.todo.controller
 
+import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.system.error.ErrorObject
 import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardWithPageDto
-import com.sparta.todoapp.todo.entity.TodoBoard
+import com.sparta.todoapp.todo.entity.TodoBoardEntity
 import com.sparta.todoapp.todo.service.BoardService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -41,7 +42,7 @@ class BoardController @Autowired constructor(
     @PostMapping
     fun createTodoBoard(@RequestBody @Valid requestTodoBoardDto: RequestTodoBoardDto): ResponseEntity<ResponseTodoBoardDto> {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(boardService.addTodoBoard(TodoBoard.convertToEntity(requestTodoBoardDto)));
+            .body(boardService.addTodoBoard(TodoBoardEntity.convertToEntity(requestTodoBoardDto)));
     }
 
     @Operation(summary = "Board 리스트 가져오기", description = "page와 size에 해당하는 보드들을 가지고 오게 됩니다. 추가적으로 page전체 크기를 가져옵니다.")
@@ -63,10 +64,8 @@ class BoardController @Autowired constructor(
             required = false,
             defaultValue = "10"
         ) size: Int,
-        @Parameter(description = "소문자로 작성하여 주십시오.") @RequestParam(required = false, defaultValue = "desc") sort: String
-    ): ResponseEntity<ResponseTodoBoardWithPageDto> {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(boardService.getTodoBoardList(page, size, sort));
+    ) = responseEntity(HttpStatus.OK) {
+        return@responseEntity boardService.getTodoBoardList(page, size)
     }
 
     @GetMapping("/search/{name}")
