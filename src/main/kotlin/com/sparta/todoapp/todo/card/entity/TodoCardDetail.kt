@@ -1,4 +1,4 @@
-package com.sparta.todoapp.todo.entity
+package com.sparta.todoapp.todo.card.entity
 
 import jakarta.persistence.*
 

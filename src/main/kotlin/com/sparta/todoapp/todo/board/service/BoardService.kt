@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service
 interface BoardService {
     fun addTodoBoard(todoBoard: TodoBoard): ResponseTodoBoardDto;
 
-    fun getTodoBoardList(page: Int, size: Int): ResponseTodoBoardWithPageDto
+    fun getTodoBoardList(page: Int, size: Int, sort: String): ResponseTodoBoardWithPageDto
 }

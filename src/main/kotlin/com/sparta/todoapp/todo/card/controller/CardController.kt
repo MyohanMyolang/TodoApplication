@@ -1,13 +1,14 @@
-package com.sparta.todoapp.todo.controller
+package com.sparta.todoapp.todo.card.controller
 
 import com.sparta.todoapp.system.error.ErrorObject
-import com.sparta.todoapp.todo.dto.*
-import com.sparta.todoapp.todo.entity.TodoCard
-import com.sparta.todoapp.todo.service.CardService
+import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
+import com.sparta.todoapp.todo.card.entity.TodoCard
+import com.sparta.todoapp.todo.card.service.CardService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.media.SchemaProperty
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -23,12 +24,15 @@ import org.springframework.web.bind.annotation.*
 class CardController @Autowired constructor(
     private val todoService: CardService
 ) {
+
     @Operation(summary = "Card 등록하기", description = "Card를 등록시킨다. 등록시키기 이전에 board가 필요하다.")
     @PostMapping
     fun addTodoCard(@RequestBody @Valid requestTodoCardDto: RequestTodoCardDto): ResponseEntity<ResponseTodoCardDto> {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(todoService.addTodoCard(TodoCard.convertToEntity(requestTodoCardDto)))
     }
+
+    // --------------------------------------------------------------------------------
 
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = [
         Content(mediaType = "applicatino/json", schemaProperties = [
@@ -50,6 +54,8 @@ class CardController @Autowired constructor(
         return ResponseEntity.status(HttpStatus.OK)
             .body(todoService.updateTodoCardById(id, updateData));
     }
+
+    // --------------------------------------------------------------------------------
 
     @DeleteMapping("/{id}")
     fun deleteTodoCardById(@PathVariable id: Long): ResponseEntity<ResponseTodoCardDetailDto> {

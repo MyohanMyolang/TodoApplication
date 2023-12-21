@@ -1,8 +1,10 @@
-package com.sparta.todoapp.todo.entity
+package com.sparta.todoapp.todo.card.entity
 
-import com.sparta.todoapp.todo.dto.RequestTodoCardDto
-import com.sparta.todoapp.todo.dto.ResponseTodoCardDetailDto
-import com.sparta.todoapp.todo.dto.ResponseTodoCardDto
+import com.sparta.todoapp.auth.member.entity.Member
+import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
+import com.sparta.todoapp.todo.entity.TodoBoard
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -14,12 +16,12 @@ class TodoCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long? = null;
 
-    @Column(name = "owner")
-    private val ownerId: Long;
+    @Column(name = "board")
+    private val boardId: Long;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
-    val owner: TodoBoard? = null;
+    @JoinColumn(name = "board", referencedColumnName = "id", insertable = false, updatable = false)
+    val board: TodoBoard? = null;
 
     @Column(name = "title")
     private var title: String;
@@ -34,9 +36,13 @@ class TodoCard {
     @JoinColumn(name = "detail")
     private var todoCardDetail: TodoCardDetail;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
+    val owner: Member? = null;
+
 
     constructor(ownerId: Long, title: String, isCompleted: Boolean = false, todoCardDetail: TodoCardDetail) {
-        this.ownerId = ownerId;
+        this.boardId = ownerId;
         this.title = title
         this.isCompleted = isCompleted;
         this.todoCardDetail = todoCardDetail;
@@ -67,7 +73,7 @@ class TodoCard {
 
     companion object {
         fun convertToEntity(dto: RequestTodoCardDto): TodoCard {
-            val todoCardDetail = TodoCardDetail(writer = dto.writer!!, descript = dto.descript!!)
+            val todoCardDetail = TodoCardDetail(writer = dto.writer!!, descript = dto.description!!)
             return TodoCard(ownerId = dto.targetBoardId!!, title = dto.title!!, todoCardDetail = todoCardDetail)
         }
     }

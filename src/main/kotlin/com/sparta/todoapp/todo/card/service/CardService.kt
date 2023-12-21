@@ -1,8 +1,8 @@
-package com.sparta.todoapp.todo.service
+package com.sparta.todoapp.todo.card.service
 
-import com.sparta.todoapp.todo.dto.ResponseTodoCardDetailDto
-import com.sparta.todoapp.todo.dto.ResponseTodoCardDto
-import com.sparta.todoapp.todo.entity.TodoCard
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
+import com.sparta.todoapp.todo.card.entity.TodoCard
 
 interface CardService {
 

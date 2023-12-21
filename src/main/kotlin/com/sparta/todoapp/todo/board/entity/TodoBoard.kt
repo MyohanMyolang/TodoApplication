@@ -1,10 +1,11 @@
 package com.sparta.todoapp.todo.entity
 
+import com.sparta.todoapp.auth.member.entity.Member
 import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
-import com.sparta.todoapp.todo.dto.ResponseTodoCardDto
+import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
+import com.sparta.todoapp.todo.card.entity.TodoCard
 import jakarta.persistence.*
-import org.hibernate.annotations.BatchSize
 import org.hibernate.annotations.DynamicUpdate
 
 @Entity
@@ -19,8 +20,12 @@ class TodoBoard {
     @Column(name = "owner_name")
     private var ownerName: String;
 
-    @OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "board", cascade = [CascadeType.REMOVE])
     private val todoCard: List<TodoCard> = mutableListOf();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
+    val owner: Member? = null;
 
     constructor(ownerName: String) {
         this.ownerName = ownerName;

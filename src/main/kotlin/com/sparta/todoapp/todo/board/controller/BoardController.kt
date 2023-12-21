@@ -18,6 +18,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+/**
+ * TODO:
+ *  1. Controller에 로그인 확인 로직을 추가한다.
+ *  2.
+ */
+
 @RestController
 @RequestMapping("/todo/board")
 class BoardController @Autowired constructor(
@@ -43,19 +49,28 @@ class BoardController @Autowired constructor(
         ApiResponse(responseCode = "200", description = "가져오기 완료"),
         ApiResponse(
             responseCode = "404", description = "page 범위 밖일 때 발생합니다.", content = [
-                (Content(mediaType = "application/json", schema = Schema(description = "페이지가 존재하지 않습니다.", implementation = ErrorObject::class)))
+                (Content(
+                    mediaType = "application/json",
+                    schema = Schema(description = "페이지가 존재하지 않습니다.", implementation = ErrorObject::class)
+                ))
             ]
         )
     )
     @GetMapping
-    fun getBoardAndTodoList(
+    fun getTodoBoardList(
         @RequestParam(required = false, defaultValue = "1") page: Int,
         @Parameter(description = "이후 page가 변경되어도 size값은 유지되어야 중복 데이터를 가져오지 않습니다.") @RequestParam(
             required = false,
             defaultValue = "10"
-        ) size: Int
+        ) size: Int,
+        @Parameter(description = "소문자로 작성하여 주십시오.") @RequestParam(required = false, defaultValue = "desc") sort: String
     ): ResponseEntity<ResponseTodoBoardWithPageDto> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(boardService.getTodoBoardList(page, size));
+            .body(boardService.getTodoBoardList(page, size, sort));
+    }
+
+    @GetMapping("/search/{name}")
+    fun getTodoBoardByName(@PathVariable name: String) {
+        TODO("이름 기반으로 board검색해서 반환하기")
     }
 }
