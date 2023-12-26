@@ -4,6 +4,7 @@ import com.sparta.todoapp.auth.IAuth
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.todo.card.domain.TodoCard
 import com.sparta.todoapp.todo.card.dto.*
+import com.sparta.todoapp.todo.card.entity.TodoCardEntity
 import com.sparta.todoapp.todo.card.repository.ITodoCardRepository
 import com.sparta.todoapp.todo.comment.dto.ResponseCommentDto
 import com.sparta.todoapp.todo.exception.NotFoundTargetException
@@ -23,6 +24,8 @@ class CardServiceImpl(
         return func.invoke("test")
     }
 
+    private fun findTodoCardById(id: Long): TodoCardEntity =
+        todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
 
     /**
      * @throws NotFoundTargetException Board가 존재하지 않으면 던집니다.
@@ -35,7 +38,7 @@ class CardServiceImpl(
     }
 
     override fun getTodoCardDetailByIdWithCommentList(id: Long): ResponseTodoCardDetailWithCommentListDto {
-        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("해당 Card가 존재하지 않습니다.")
+        val findCard = findTodoCardById(id)
         val commentListDto = mutableListOf<ResponseCommentDto>()
         val commentList = todoRepository.findCommentListByTodoCardDetailEntity(findCard.todoCardDetailEntity).forEach {
             commentListDto.add(it.toResponseDto())
@@ -48,7 +51,7 @@ class CardServiceImpl(
      */
     @Transactional
     override fun updateTodoCardById(id: Long, updateData: UpdateTodoCardDto): ResponseTodoCardDetailDto {
-        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+        val findCard = findTodoCardById(id)
 
         return todoCardRepository.updateDataByDto(findCard, updateData).toDetailResponseDto()
     }
@@ -58,7 +61,7 @@ class CardServiceImpl(
      */
     @Transactional
     override fun deleteTodoCardById(id: Long): ResponseTodoCardDetailDto {
-        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+        val findCard = findTodoCardById(id)
 
         return todoCardRepository.deleteCard(findCard).toDetailResponseDto()
     }
@@ -76,7 +79,7 @@ class CardServiceImpl(
 
     @Transactional
     override fun completedChange(id: Long): Boolean {
-        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+        val findCard = findTodoCardById(id)
 
         return todoCardRepository.completedChange(findCard)
     }

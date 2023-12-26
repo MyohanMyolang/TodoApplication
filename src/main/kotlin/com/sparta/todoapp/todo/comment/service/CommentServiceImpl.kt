@@ -19,6 +19,10 @@ class CommentServiceImpl(
     private val commentRepository: ICommentRepository,
     private val todoRepository: ITodoRepository
 ) : CommentService {
+
+    private fun findCommentById(id: Long): CommentEntity =
+        commentRepository.findCommentById(id) ?: throw NotFoundTargetException("Comment가 존재하지 않습니다.")
+
     @Transactional
     override fun addComment(requestDto: RequestCommentDto): ResponseCommentDto {
         todoRepository.findCardById(requestDto.cardId!!) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
@@ -28,8 +32,8 @@ class CommentServiceImpl(
 
     @Transactional
     override fun updateComment(updateDto: UpdateCommentDto): ResponseCommentDto {
-        val findComment =
-            commentRepository.findCommentById(updateDto.id) ?: throw NotFoundTargetException("Comment가 존재하지 않습니다.")
+        val findComment = findCommentById(updateDto.id!!)
+
         val comment = Comment.of(updateDto, findComment.detailCardId)
         if (!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
 
@@ -38,11 +42,10 @@ class CommentServiceImpl(
 
     @Transactional
     override fun deleteComment(deleteDto: DeleteCommentDto): ResponseCommentDto {
-        val findComment =
-            commentRepository.findCommentById(deleteDto.id) ?: throw NotFoundTargetException("Comment가 존재하지 않습니다.")
+        val findComment = findCommentById(deleteDto.id!!)
 
         val comment = Comment.from(deleteDto)
-        if(!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
+        if (!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
 
         return commentRepository.deleteComment(findComment).toResponseDto();
     }
