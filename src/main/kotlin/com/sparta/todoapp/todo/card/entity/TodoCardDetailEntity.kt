@@ -3,23 +3,18 @@ package com.sparta.todoapp.todo.card.entity
 import jakarta.persistence.*
 
 @Entity
-class TodoCardDetail {
+@Table(name = "todo_card_detail")
+class TodoCardDetailEntity(
+    @Column(name = "description")
+    var description: String,
 
+    @Column(name = "writer")
+    var writer: String
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long? = null;
 
-    @Column(name = "writer")
-    var writer: String = "";
-
-    @Column(name = "description")
-    var description: String = "";
-
-
-    constructor(descript: String, writer: String) {
-        this.writer = writer;
-        this.description = descript;
-    }
 
     fun updateValue(key: String, updateData: Any?) {
         when (key) {

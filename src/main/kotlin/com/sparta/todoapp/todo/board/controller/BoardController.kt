@@ -1,5 +1,6 @@
 package com.sparta.todoapp.todo.controller
 
+import com.sparta.todoapp.global.util.overlapTest
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.system.error.ErrorObject
 import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/todo/board")
-class BoardController @Autowired constructor(
+class BoardController(
     private val boardService: BoardService
 ) {
     @Operation(summary = "Board 등록", description = "새로운 Board를 생성합니다.")
@@ -40,10 +41,10 @@ class BoardController @Autowired constructor(
         )
     )
     @PostMapping
-    fun createTodoBoard(@RequestBody @Valid requestTodoBoardDto: RequestTodoBoardDto): ResponseEntity<ResponseTodoBoardDto> {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(boardService.addTodoBoard(TodoBoardEntity.convertToEntity(requestTodoBoardDto)));
-    }
+    fun createTodoBoard(@RequestBody @Valid requestTodoBoardDto: RequestTodoBoardDto) =
+        responseEntity(HttpStatus.CREATED) {
+            boardService.addTodoBoard(requestTodoBoardDto)
+        }
 
     @Operation(summary = "Board 리스트 가져오기", description = "page와 size에 해당하는 보드들을 가지고 오게 됩니다. 추가적으로 page전체 크기를 가져옵니다.")
     @ApiResponses(
@@ -60,16 +61,16 @@ class BoardController @Autowired constructor(
     @GetMapping
     fun getTodoBoardList(
         @RequestParam(required = false, defaultValue = "1") page: Int,
-        @Parameter(description = "이후 page가 변경되어도 size값은 유지되어야 중복 데이터를 가져오지 않습니다.") @RequestParam(
+        @RequestParam(
             required = false,
             defaultValue = "10"
         ) size: Int,
     ) = responseEntity(HttpStatus.OK) {
-        return@responseEntity boardService.getTodoBoardList(page, size)
+        boardService.getTodoBoardList(page, size)
     }
 
     @GetMapping("/search/{name}")
-    fun getTodoBoardByName(@PathVariable name: String) {
+    fun getTodoBoardByName(@PathVariable name: String) = responseEntity(HttpStatus.OK) {
         TODO("이름 기반으로 board검색해서 반환하기")
     }
 }

@@ -1,6 +1,6 @@
 package com.sparta.todoapp.auth.member.entity
 
-import com.sparta.todoapp.todo.card.entity.TodoCard
+import com.sparta.todoapp.todo.card.entity.TodoCardEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -16,10 +16,10 @@ class Member {
     val id: Long? = null;
 
     @OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
-    val cardList: List<TodoCard> = mutableListOf();
+    val cardList: List<TodoCardEntity> = mutableListOf();
 
     @OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
-    val boardList: List<TodoCard> = mutableListOf();
+    val boardList: List<TodoCardEntity> = mutableListOf();
 
     @Column(name = "key", nullable = false)
     val key: String? = null

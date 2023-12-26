@@ -1,6 +1,7 @@
 package com.sparta.todoapp.todo.card.entity
 
 import com.sparta.todoapp.auth.member.entity.Member
+import com.sparta.todoapp.todo.card.domain.TodoCard
 import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
@@ -10,50 +11,45 @@ import java.time.LocalDateTime
 
 
 @Entity
-class TodoCard {
+@Table(name = "todo_card")
+class TodoCardEntity(
+    @Column(name = "board")
+    val boardId: Long,
+
+    @Column(name = "title")
+    var title: String,
+
+    @Column(name = "isCompleted")
+    var isCompleted: Boolean = false,
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @JoinColumn(name = "detail")
+    val todoCardDetailEntity: TodoCardDetailEntity
+) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long? = null;
 
-    @Column(name = "board")
-    private val boardId: Long;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board", referencedColumnName = "id", insertable = false, updatable = false)
     val board: TodoBoardEntity? = null;
 
-    @Column(name = "title")
-    private var title: String;
-
-    @Column(name = "isCompleted")
-    private var isCompleted: Boolean;
-
     @Column(name = "date")
     private val date: LocalDateTime = LocalDateTime.now();
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "detail")
-    private var todoCardDetail: TodoCardDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
     val owner: Member? = null;
 
 
-    constructor(ownerId: Long, title: String, isCompleted: Boolean = false, todoCardDetail: TodoCardDetail) {
-        this.boardId = ownerId;
-        this.title = title
-        this.isCompleted = isCompleted;
-        this.todoCardDetail = todoCardDetail;
-    }
-
-    fun updateValue(updateData: Map<String, Any>): TodoCard {
+    fun updateValue(updateData: Map<String, Any>): TodoCardEntity {
         try {
             updateData.keys.forEach {
                 when (it) {
                     "title" -> title = updateData[it] as String
-                    else -> todoCardDetail.updateValue(it, updateData[it])
+                    else -> todoCardDetailEntity.updateValue(it, updateData[it])
                 }
             }
             return this
@@ -62,19 +58,19 @@ class TodoCard {
         }
     }
 
-    fun convertDto() = ResponseTodoCardDto(id!!, title, isCompleted, date)
-    fun convertDetailDto() = ResponseTodoCardDetailDto(
+    fun toResponseDto() = ResponseTodoCardDto(
         id = id!!,
         title = title,
         isCompleted = isCompleted,
-        description = todoCardDetail.description,
-        writer = todoCardDetail.writer
+        date = date
     )
 
-    companion object {
-        fun convertToEntity(dto: RequestTodoCardDto): TodoCard {
-            val todoCardDetail = TodoCardDetail(writer = dto.writer!!, descript = dto.description!!)
-            return TodoCard(ownerId = dto.targetBoardId!!, title = dto.title!!, todoCardDetail = todoCardDetail)
-        }
-    }
+    fun toDetailResponseDto() = ResponseTodoCardDetailDto(
+        id = id!!,
+        title = title,
+        isCompleted = isCompleted,
+        date = date,
+        writer = todoCardDetailEntity.writer,
+        description = todoCardDetailEntity.description
+    )
 }

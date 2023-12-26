@@ -1,9 +1,11 @@
 package com.sparta.todoapp.todo.exception
 
+import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.system.error.ErrorCode
 import com.sparta.todoapp.system.error.ErrorObject
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -27,5 +29,10 @@ class TodoExceptionHandler {
     fun notFoundTargetError(error: NotFoundTargetException): ResponseEntity<ErrorObject> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(ErrorObject(ErrorCode.NotFoundTarget.id, ErrorCode.NotFoundTarget.message, error.message));
+    }
+    
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun converterError(error: HttpMessageNotReadableException) = responseEntity(HttpStatus.BAD_REQUEST){
+        println(error.localizedMessage)
     }
 }

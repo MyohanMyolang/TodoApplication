@@ -6,6 +6,11 @@ import com.sparta.todoapp.todo.entity.TodoBoardEntity
 data class TodoBoard(
     var boardName: String
 ) {
-    fun from(dto: RequestTodoBoardDto) = TodoBoardEntity(
-        boardName = boardName)
+    companion object {
+        fun from(dto: RequestTodoBoardDto) = TodoBoard(
+            boardName = dto.boardName!!
+        )
+    }
+
+    fun toEntity(): TodoBoardEntity = TodoBoardEntity(boardName = boardName)
 }

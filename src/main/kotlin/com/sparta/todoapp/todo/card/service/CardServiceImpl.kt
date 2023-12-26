@@ -1,76 +1,77 @@
 package com.sparta.todoapp.todo.card.service
 
 import com.sparta.todoapp.auth.IAuth
+import com.sparta.todoapp.global.util.responseEntity
+import com.sparta.todoapp.todo.card.domain.TodoCard
+import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
-import com.sparta.todoapp.todo.card.entity.TodoCard
+import com.sparta.todoapp.todo.card.dto.UpdateTodoCardDto
+import com.sparta.todoapp.todo.card.repository.ITodoCardRepository
 import com.sparta.todoapp.todo.exception.NotFoundTargetException
-import com.sparta.todoapp.todo.card.repository.TodoCardRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.repository.findByIdOrNull
+import com.sparta.todoapp.todo.facade.ITodoRepository
+import jakarta.transaction.Transactional
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
-class CardServiceImpl @Autowired constructor(
-    private val todoCardRepository: TodoCardRepository,
-    private val auth: IAuth
+class CardServiceImpl(
+    private val auth: IAuth,
+    private val todoCardRepository: ITodoCardRepository,
+    private val todoRepository: ITodoRepository
 ) : CardService {
 
-    fun <T> cardAuthCheck(func: () -> T): T {
-        println("=============================================================================\n\n\n")
-        println("TODO - 권한 체크 로직")
-        /**
-         * NOTE:
-         *  1. Card의 Owner와 현재 사용자의 Key가 일치하는지 확인한다.
-         *  2. 권한이 없다면 NoPermission
-         */
-        val test = todoCardRepository.findAll()
-        if(test.size != 0){
-            println(test[0].owner?.key);
-        }
-        println("\n\n\n=============================================================================")
-        return func.invoke();
-
+    fun <T> authCheck(func: (it: Any) -> T): T {
+        return func.invoke("test")
     }
+
 
     /**
      * @throws NotFoundTargetException Board가 존재하지 않으면 던집니다.
      */
-    override fun addTodoCard(todoCard: TodoCard): ResponseTodoCardDto = cardAuthCheck{
-        // NOTE: board Owner의 key값과 사용자의 Key값이 일치하는지 확인한다.
-        try {
-            return@cardAuthCheck todoCardRepository.save(todoCard)
-                .convertDto(); } catch (e: DataIntegrityViolationException) {
-            throw NotFoundTargetException("해당 Board가 존재하지 않습니다.")
-        }
+    @Transactional
+    override fun addTodoCard(requestTodoCard: RequestTodoCardDto): ResponseTodoCardDetailDto {
+        todoRepository.findBoardById(requestTodoCard.boardId!!) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
+
+        return todoCardRepository.addCard(TodoCard.from(requestTodoCard)).toDetailResponseDto()
     }
 
     /**
      * @throws NotFoundTargetException id와 일치하는 카드가 존재 하지 않을 경우 던집니다.
      */
-    override fun updateTodoCardById(id: Long, updateData: Map<String, Any>): ResponseTodoCardDetailDto {
-        val foundCard =
-            todoCardRepository.findByIdOrNull(id) ?: throw NotFoundTargetException("해당 Todo Card가 존재하지 않습니다.")
-        return todoCardRepository.save(foundCard.updateValue(updateData)).convertDetailDto()
+    @Transactional
+    override fun updateTodoCardById(id: Long, updateData: UpdateTodoCardDto): ResponseTodoCardDetailDto {
+        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+
+        return todoCardRepository.updateDataByDto(findCard, updateData).toDetailResponseDto()
     }
 
     /**
      * @throws NotFoundTargetException id와 일치하는 카드가 존재 하지 않을 경우 던집니다.
      */
+    @Transactional
     override fun deleteTodoCardById(id: Long): ResponseTodoCardDetailDto {
-        val foundCard =
-            todoCardRepository.findByIdOrNull(id) ?: throw NotFoundTargetException("해당 Todo Card가 존재하지 않습니다.")
-        todoCardRepository.delete(foundCard);
-        return foundCard.convertDetailDto()
+        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+
+        return todoCardRepository.deleteCard(findCard).toDetailResponseDto()
     }
 
-    fun getSortedCardList(id:Long, sort:String){
-        when(sort) {
-            "asc" -> todoCardRepository.findAllByBoardIdOrderByDateAsc(PageRequest.of(0, 5), id)
-            "desc" -> todoCardRepository.findAllByBoardIdOrderByDateDesc(PageRequest.of(0, 5), id)
-            else -> TODO("해당되는 sort가 존재하지 않는 메세지 던지기 NotFoundTag")
-        }
+    @Transactional
+    override fun getSortedCardList(id: Long, page: Int, size: Int, sort: String): List<ResponseTodoCardDto> {
+        val responseDtoList = mutableListOf<ResponseTodoCardDto>()
+        when (sort) {
+            "desc" -> todoCardRepository.getCardListDescByBoardId(id, page, size)
+            "asc" -> todoCardRepository.getCardListAscByBoardId(id, page, size)
+            else -> throw NotFoundTargetException("해당 정렬 방식은 존재하지 않습니다.")
+        }.forEach { responseDtoList.add(it.toResponseDto()) }
+
+        return responseDtoList
+    }
+
+    @Transactional
+    override fun completedChange(id: Long): Boolean {
+        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+
+        return todoCardRepository.completedChange(findCard)
     }
 }
