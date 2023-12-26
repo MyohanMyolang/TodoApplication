@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/todo/card")
 class CardController(
-    private val todoService: CardService
+    private val cardService: CardService
 ) {
     @Operation(summary = "Card 등록하기", description = "Card를 등록시킨다. 등록시키기 이전에 board가 필요하다.")
     @PostMapping
     fun addTodoCard(@RequestBody @Valid requestTodoCardDto: RequestTodoCardDto) = responseEntity(HttpStatus.CREATED) {
-        todoService.addTodoCard(requestTodoCardDto)
+        cardService.addTodoCard(requestTodoCardDto)
     }
 
     @ApiResponses(
@@ -40,12 +40,12 @@ class CardController(
         @Parameter(description = "Board의 Id를 입력하여 주십시오.") @PathVariable id: Long,
         @RequestBody @Valid updateData: UpdateTodoCardDto
     ) = responseEntity(HttpStatus.OK) {
-        todoService.updateTodoCardById(id, updateData)
+        cardService.updateTodoCardById(id, updateData)
     }
 
     @DeleteMapping("/{id}")
     fun deleteTodoCardById(@PathVariable id: Long) = responseEntity(HttpStatus.NO_CONTENT) {
-        todoService.deleteTodoCardById(id)
+        cardService.deleteTodoCardById(id)
     }
 
     @GetMapping
@@ -54,11 +54,16 @@ class CardController(
         @RequestParam(required = false, defaultValue = "1") page: Int,
         @RequestParam(required = false, defaultValue = "desc") sort: String
     ) = responseEntity(HttpStatus.OK) {
-        todoService.getSortedCardList(boardId, page, 5, sort)
+        cardService.getSortedCardList(boardId, page, 5, sort)
+    }
+
+    @GetMapping("/{id}")
+    fun getTodoCardDetailByIdWithCommentList(@PathVariable id: Long) = responseEntity(HttpStatus.OK){
+        cardService.getTodoCardDetailByIdWithCommentList(id)
     }
 
     @GetMapping("/completed/{id}")
     fun cardCompletedChange(@PathVariable id: Long) = responseEntity(HttpStatus.OK) {
-        todoService.completedChange(id)
+        cardService.completedChange(id)
     }
 }

@@ -1,6 +1,5 @@
 package com.sparta.todoapp.todo.controller
 
-import com.sparta.todoapp.global.util.overlapTest
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.system.error.ErrorObject
 import com.sparta.todoapp.todo.dto.RequestTodoBoardDto

@@ -14,25 +14,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class TodoExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun dtoValidateError(error: MethodArgumentNotValidException): ResponseEntity<ErrorObject> {
+    fun dtoValidateError(error: MethodArgumentNotValidException) = responseEntity(ErrorCode.Validation.status) {
         val errorMap = mutableMapOf<String, String>();
 
         error.bindingResult.fieldErrors.forEach {
             errorMap[it.field] = it.defaultMessage ?: "정의되지 않은 에러";
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(ErrorObject(ErrorCode.Validation.id, ErrorCode.Validation.message, errorMap));
+        ErrorObject(ErrorCode.Validation.message, errorMap)
     }
 
     @ExceptionHandler(NotFoundTargetException::class)
-    fun notFoundTargetError(error: NotFoundTargetException): ResponseEntity<ErrorObject> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(ErrorObject(ErrorCode.NotFoundTarget.id, ErrorCode.NotFoundTarget.message, error.message));
+    fun notFoundTargetError(error: NotFoundTargetException) = responseEntity(ErrorCode.NotFoundTarget.status) {
+        ErrorObject(ErrorCode.NotFoundTarget.message, error.message)
     }
-    
-    @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun converterError(error: HttpMessageNotReadableException) = responseEntity(HttpStatus.BAD_REQUEST){
-        println(error.localizedMessage)
+
+    @ExceptionHandler(UnauthorizedException::class)
+    fun unauthorizedError(error: UnauthorizedException) = responseEntity(ErrorCode.Unauthorized.status) {
+        ErrorObject(ErrorCode.Unauthorized.message, error.message)
     }
 }

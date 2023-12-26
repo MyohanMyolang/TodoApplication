@@ -6,8 +6,6 @@ import java.lang.reflect.Member
 class BasicAuth (
     private val request: HttpServletRequest
 ): IAuth{
-    override fun authTest(){
-    }
 
     fun getCurrentMemberKey(): String? {
         return request.getHeader("Authorization");

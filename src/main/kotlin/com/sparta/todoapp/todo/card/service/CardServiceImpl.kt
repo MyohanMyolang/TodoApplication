@@ -3,11 +3,9 @@ package com.sparta.todoapp.todo.card.service
 import com.sparta.todoapp.auth.IAuth
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.todo.card.domain.TodoCard
-import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
-import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
-import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
-import com.sparta.todoapp.todo.card.dto.UpdateTodoCardDto
+import com.sparta.todoapp.todo.card.dto.*
 import com.sparta.todoapp.todo.card.repository.ITodoCardRepository
+import com.sparta.todoapp.todo.comment.dto.ResponseCommentDto
 import com.sparta.todoapp.todo.exception.NotFoundTargetException
 import com.sparta.todoapp.todo.facade.ITodoRepository
 import jakarta.transaction.Transactional
@@ -36,6 +34,15 @@ class CardServiceImpl(
         return todoCardRepository.addCard(TodoCard.from(requestTodoCard)).toDetailResponseDto()
     }
 
+    override fun getTodoCardDetailByIdWithCommentList(id: Long): ResponseTodoCardDetailWithCommentListDto {
+        val findCard = todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("해당 Card가 존재하지 않습니다.")
+        val commentListDto = mutableListOf<ResponseCommentDto>()
+        val commentList = todoRepository.findCommentListByTodoCardDetailEntity(findCard.todoCardDetailEntity).forEach {
+            commentListDto.add(it.toResponseDto())
+        }
+        return ResponseTodoCardDetailWithCommentListDto(findCard.toDetailResponseDto(), commentListDto)
+    }
+
     /**
      * @throws NotFoundTargetException id와 일치하는 카드가 존재 하지 않을 경우 던집니다.
      */
@@ -56,7 +63,6 @@ class CardServiceImpl(
         return todoCardRepository.deleteCard(findCard).toDetailResponseDto()
     }
 
-    @Transactional
     override fun getSortedCardList(id: Long, page: Int, size: Int, sort: String): List<ResponseTodoCardDto> {
         val responseDtoList = mutableListOf<ResponseTodoCardDto>()
         when (sort) {

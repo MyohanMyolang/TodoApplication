@@ -1,5 +1,6 @@
 package com.sparta.todoapp.todo.card.entity
 
+import com.sparta.todoapp.todo.comment.entity.CommentEntity
 import jakarta.persistence.*
 
 @Entity
@@ -15,12 +16,7 @@ class TodoCardDetailEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: Long? = null;
 
+    @OneToMany(mappedBy = "todoCardDetail", cascade = [CascadeType.REMOVE])
+    private val commentList: List<CommentEntity> = mutableListOf()
 
-    fun updateValue(key: String, updateData: Any?) {
-        when (key) {
-            "writer" -> writer = updateData as String;
-            "description" -> description = updateData as String;
-            else -> throw TODO("BadUpdateRequestException - [key]는 존재하지 않습니다.")
-        }
-    }
 }

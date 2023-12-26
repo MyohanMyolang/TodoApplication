@@ -2,6 +2,7 @@ package com.sparta.todoapp.todo.card.repository
 
 import com.sparta.todoapp.todo.card.domain.TodoCard
 import com.sparta.todoapp.todo.card.dto.UpdateTodoCardDto
+import com.sparta.todoapp.todo.card.entity.TodoCardDetailEntity
 import com.sparta.todoapp.todo.card.entity.TodoCardEntity
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -37,4 +38,6 @@ class TodoCardPostgresRepository(
         entity.isCompleted = !entity.isCompleted
         return entity.isCompleted
     }
+
+    override fun findCardDetailById(id: Long): TodoCardDetailEntity? = todoCardDetailEntityRepository.findByIdOrNull(id)
 }
