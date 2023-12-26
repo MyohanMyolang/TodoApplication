@@ -57,6 +57,11 @@ class CardController(
         todoService.getSortedCardList(boardId, page, 5, sort)
     }
 
+    @GetMapping("/{id}")
+    fun getTodoCardDetailByIdWithCommentList(@PathVariable id: String) = responseEntity(HttpStatus.OK){
+
+    }
+
     @GetMapping("/completed/{id}")
     fun cardCompletedChange(@PathVariable id: Long) = responseEntity(HttpStatus.OK) {
         todoService.completedChange(id)

@@ -10,5 +10,5 @@ class TodoRepository(
     private val commentRepository: ICommentRepository
 ) : ITodoRepository {
     override fun findBoardById(id: Long) = todoBoardRepository.findBoardById(id)
-
+    override fun findCardById(id: Long) = todoCardRepository.findCardById(id)
 }
