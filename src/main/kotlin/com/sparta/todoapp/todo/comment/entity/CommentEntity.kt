@@ -26,7 +26,7 @@ class CommentEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_card_detail", referencedColumnName = "id", insertable = false, updatable = false)
-    val todoCard: TodoCardDetailEntity? = null;
+    val todoCardDetail: TodoCardDetailEntity? = null;
 
     fun toResponseDto() = ResponseCommentDto(
         id = id!!,

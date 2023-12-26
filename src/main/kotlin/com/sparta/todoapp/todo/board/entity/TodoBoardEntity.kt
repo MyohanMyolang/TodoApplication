@@ -1,6 +1,6 @@
 package com.sparta.todoapp.todo.entity
 
-import com.sparta.todoapp.auth.member.entity.Member
+import com.sparta.todoapp.common.member.entity.MemberEntity
 import com.sparta.todoapp.todo.board.domain.TodoBoard
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
 import com.sparta.todoapp.todo.card.entity.TodoCardEntity
@@ -21,7 +21,7 @@ class TodoBoardEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
-    val owner: Member? = null;
+    val owner: MemberEntity? = null;
 
 
 

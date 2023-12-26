@@ -1,5 +1,7 @@
-package com.sparta.todoapp.auth
+package com.sparta.todoapp.auth.Config
 
+import com.sparta.todoapp.auth.BasicAuth
+import com.sparta.todoapp.auth.IAuth
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

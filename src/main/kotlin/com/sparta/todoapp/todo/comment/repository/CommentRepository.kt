@@ -1,5 +1,6 @@
 package com.sparta.todoapp.todo.comment.repository
 
+import com.sparta.todoapp.todo.card.entity.TodoCardDetailEntity
 import com.sparta.todoapp.todo.comment.domain.Comment
 import com.sparta.todoapp.todo.comment.entity.CommentEntity
 import org.springframework.data.repository.findByIdOrNull
@@ -18,4 +19,7 @@ class CommentRepository(
         commentEntityRepository.delete(entity)
         return entity
     }
+
+    override fun findAllByTodoCardDetail(todoCardDetailEntity: TodoCardDetailEntity) =
+        commentEntityRepository.findAllByTodoCardDetail(todoCardDetailEntity)
 }

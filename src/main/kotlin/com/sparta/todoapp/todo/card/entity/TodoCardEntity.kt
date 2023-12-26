@@ -1,8 +1,6 @@
 package com.sparta.todoapp.todo.card.entity
 
-import com.sparta.todoapp.auth.member.entity.Member
-import com.sparta.todoapp.todo.card.domain.TodoCard
-import com.sparta.todoapp.todo.card.dto.RequestTodoCardDto
+import com.sparta.todoapp.common.member.entity.MemberEntity
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
 import com.sparta.todoapp.todo.entity.TodoBoardEntity
@@ -41,22 +39,7 @@ class TodoCardEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
-    val owner: Member? = null;
-
-
-    fun updateValue(updateData: Map<String, Any>): TodoCardEntity {
-        try {
-            updateData.keys.forEach {
-                when (it) {
-                    "title" -> title = updateData[it] as String
-                    else -> todoCardDetailEntity.updateValue(it, updateData[it])
-                }
-            }
-            return this
-        } catch (e: ClassCastException) {
-            throw TODO("BadUpdateRequestException - 타입이 제대로 들어오지 않았습니다.")
-        }
-    }
+    val owner: MemberEntity? = null;
 
     fun toResponseDto() = ResponseTodoCardDto(
         id = id!!,
