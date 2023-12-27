@@ -1,5 +1,6 @@
 package com.sparta.todoapp.todo.card.repository
 
+import com.sparta.todoapp.common.member.entity.MemberEntity
 import com.sparta.todoapp.todo.card.domain.TodoCard
 import com.sparta.todoapp.todo.card.dto.UpdateTodoCardDto
 import com.sparta.todoapp.todo.card.entity.TodoCardDetailEntity
@@ -14,7 +15,9 @@ class TodoCardPostgresRepository(
 
     private fun getPageRequest(page: Int, size: Int) = PageRequest.of(page, size)
 
-    override fun addCard(todoCard: TodoCard) = todoCardEntityRepository.save(todoCard.toEntity())
+    override fun addCard(todoCard: TodoCard, owner: MemberEntity): TodoCardEntity =
+        todoCardEntityRepository.save(todoCard.toEntityFrom(owner))
+
     override fun findCardById(id: Long): TodoCardEntity? = todoCardEntityRepository.findByIdOrNull(id);
     override fun updateDataByDto(findCard: TodoCardEntity, updateData: UpdateTodoCardDto): TodoCardEntity {
         updateData.title?.let { findCard.title = it }

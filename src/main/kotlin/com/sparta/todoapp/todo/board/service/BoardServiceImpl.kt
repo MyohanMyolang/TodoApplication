@@ -1,27 +1,30 @@
-package com.sparta.todoapp.todo.service
+package com.sparta.todoapp.todo.board.service
 
+import com.sparta.todoapp.auth.IAuth
 import com.sparta.todoapp.todo.board.domain.TodoBoard
 import com.sparta.todoapp.todo.board.repository.ITodoBoardRepository
 import com.sparta.todoapp.todo.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardDto
 import com.sparta.todoapp.todo.dto.ResponseTodoBoardWithPageDto
-import com.sparta.todoapp.todo.exception.NotFoundTargetException
-import com.sparta.todoapp.todo.facade.TodoBoardEntityRepository
+import com.sparta.todoapp.system.error.exception.NotFoundTargetException
+import com.sparta.todoapp.todo.service.BoardService
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
-// TODO: 갈아엎고 다시하기.
 
 @Service
 class BoardServiceImpl @Autowired constructor(
-    private val todoBoardEntityRepository: TodoBoardEntityRepository,
-    private val todoBoardRepository: ITodoBoardRepository
+    private val todoBoardRepository: ITodoBoardRepository,
+    private val auth: IAuth
 ) : BoardService {
 
     @Transactional
-    override fun addTodoBoard(requestTodoBoardDto: RequestTodoBoardDto): ResponseTodoBoardDto =
-        todoBoardRepository.addBoard(TodoBoard.from(requestTodoBoardDto)).toResponseDto()
+    override fun addTodoBoard(requestTodoBoardDto: RequestTodoBoardDto): ResponseTodoBoardDto {
+        val owner = auth.getCurrentMemberEntity()
+
+        return todoBoardRepository.addBoard(TodoBoard.from(requestTodoBoardDto), owner).toResponseDto()
+    }
 
     /**
      * size는 요청할 때 고정으로 보내야 중복 없이 전달 된다.
@@ -38,4 +41,7 @@ class BoardServiceImpl @Autowired constructor(
         foundPage.forEach { responseDtoList.add(it.toResponseDto()) }
         return ResponseTodoBoardWithPageDto(foundPage.totalPages, responseDtoList)
     }
+
+    override fun getBoardById(id: Long) =
+        todoBoardRepository.findBoardById(id) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
 }

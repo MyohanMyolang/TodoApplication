@@ -22,12 +22,16 @@ class TodoCardEntity(
 
     @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "detail")
-    val todoCardDetailEntity: TodoCardDetailEntity
+    val todoCardDetailEntity: TodoCardDetailEntity,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner", referencedColumnName = "id", nullable = false)
+    var owner: MemberEntity
 ) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null;
+    val id: Long? = null;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,10 +40,6 @@ class TodoCardEntity(
 
     @Column(name = "date")
     private val date: LocalDateTime = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
-    val owner: MemberEntity? = null;
 
     fun toResponseDto() = ResponseTodoCardDto(
         id = id!!,

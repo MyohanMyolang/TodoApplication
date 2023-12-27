@@ -5,5 +5,5 @@ import com.sparta.todoapp.todo.comment.entity.CommentEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentEntityRepository : JpaRepository<CommentEntity, Long> {
-    fun findAllByTodoCardDetail(todoCardDetail: TodoCardDetailEntity): List<CommentEntity>
+    fun findAllByCardDetailId(cardId: Long): List<CommentEntity>
 }

@@ -35,7 +35,7 @@ class Comment(
     }
 
     fun toEntity() = CommentEntity(
-        detailCardId = cardId,
+        cardDetailId = cardId,
         userName = userName,
         userPassword = userPassword,
         description = description

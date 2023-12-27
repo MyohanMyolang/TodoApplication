@@ -1,4 +1,4 @@
-package com.sparta.todoapp.todo.exception
+package com.sparta.todoapp.system.error.exception
 
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.system.error.ErrorCode
@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@RestControllerAdvice(basePackages = ["com.sparta.todoapp.todo"])
+@RestControllerAdvice
 class TodoExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)

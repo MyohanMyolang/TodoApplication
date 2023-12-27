@@ -10,7 +10,11 @@ import jakarta.persistence.*
 @Table(name = "todo_board")
 class TodoBoardEntity(
     @Column(name = "board_name")
-    private var boardName: String
+    private var boardName: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner", referencedColumnName = "id", nullable = false)
+    var owner: MemberEntity
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,14 +23,10 @@ class TodoBoardEntity(
     @OneToMany(mappedBy = "board", cascade = [CascadeType.REMOVE])
     val todoCardEntity: List<TodoCardEntity> = mutableListOf();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner", referencedColumnName = "id", insertable = false, updatable = false)
-    val owner: MemberEntity? = null;
-
-
 
     fun toResponseDto(): ResponseTodoBoardDto = ResponseTodoBoardDto(id = this.id!!, ownerName = this.boardName)
+
     companion object {
-        fun from(domain: TodoBoard) = TodoBoardEntity(boardName = domain.boardName);
+        fun from(domain: TodoBoard, owner: MemberEntity) = TodoBoardEntity(boardName = domain.boardName, owner = owner);
     }
 }

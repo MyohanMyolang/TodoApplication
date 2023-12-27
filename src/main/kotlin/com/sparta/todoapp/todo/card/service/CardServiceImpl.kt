@@ -1,30 +1,26 @@
 package com.sparta.todoapp.todo.card.service
 
 import com.sparta.todoapp.auth.IAuth
-import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.todo.card.domain.TodoCard
 import com.sparta.todoapp.todo.card.dto.*
 import com.sparta.todoapp.todo.card.entity.TodoCardEntity
 import com.sparta.todoapp.todo.card.repository.ITodoCardRepository
-import com.sparta.todoapp.todo.comment.dto.ResponseCommentDto
-import com.sparta.todoapp.todo.exception.NotFoundTargetException
-import com.sparta.todoapp.todo.facade.ITodoRepository
+import com.sparta.todoapp.todo.comment.service.CommentService
+import com.sparta.todoapp.system.error.exception.NotFoundTargetException
+import com.sparta.todoapp.todo.service.BoardService
 import jakarta.transaction.Transactional
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
 class CardServiceImpl(
     private val auth: IAuth,
     private val todoCardRepository: ITodoCardRepository,
-    private val todoRepository: ITodoRepository
+    private val todoBoardService: BoardService,
+    private val commentService: CommentService
 ) : CardService {
 
-    fun <T> authCheck(func: (it: Any) -> T): T {
-        return func.invoke("test")
-    }
 
-    private fun findTodoCardById(id: Long): TodoCardEntity =
+    override fun getTodoCardById(id: Long): TodoCardEntity =
         todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
 
     /**
@@ -32,17 +28,17 @@ class CardServiceImpl(
      */
     @Transactional
     override fun addTodoCard(requestTodoCard: RequestTodoCardDto): ResponseTodoCardDetailDto {
-        todoRepository.findBoardById(requestTodoCard.boardId!!) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
+        val owner = todoBoardService.getBoardById(requestTodoCard.boardId!!).owner
 
-        return todoCardRepository.addCard(TodoCard.from(requestTodoCard)).toDetailResponseDto()
+        return auth.checkAuth(owner) {
+            todoCardRepository.addCard(TodoCard.from(requestTodoCard), auth.getCurrentMemberEntity())
+                .toDetailResponseDto()
+        }
     }
 
     override fun getTodoCardDetailByIdWithCommentList(id: Long): ResponseTodoCardDetailWithCommentListDto {
-        val findCard = findTodoCardById(id)
-        val commentListDto = mutableListOf<ResponseCommentDto>()
-        val commentList = todoRepository.findCommentListByTodoCardDetailEntity(findCard.todoCardDetailEntity).forEach {
-            commentListDto.add(it.toResponseDto())
-        }
+        val findCard = getTodoCardById(id)
+        val commentListDto = commentService.getCommentListByCardId(id)
         return ResponseTodoCardDetailWithCommentListDto(findCard.toDetailResponseDto(), commentListDto)
     }
 
@@ -51,9 +47,11 @@ class CardServiceImpl(
      */
     @Transactional
     override fun updateTodoCardById(id: Long, updateData: UpdateTodoCardDto): ResponseTodoCardDetailDto {
-        val findCard = findTodoCardById(id)
+        val findCard = getTodoCardById(id)
 
-        return todoCardRepository.updateDataByDto(findCard, updateData).toDetailResponseDto()
+        return auth.checkAuth(findCard.owner) {
+            todoCardRepository.updateDataByDto(findCard, updateData).toDetailResponseDto()
+        }
     }
 
     /**
@@ -61,26 +59,32 @@ class CardServiceImpl(
      */
     @Transactional
     override fun deleteTodoCardById(id: Long): ResponseTodoCardDetailDto {
-        val findCard = findTodoCardById(id)
+        val findCard = getTodoCardById(id)
 
-        return todoCardRepository.deleteCard(findCard).toDetailResponseDto()
+        return auth.checkAuth(findCard.owner) {
+            todoCardRepository.deleteCard(findCard).toDetailResponseDto()
+        }
     }
 
-    override fun getSortedCardList(id: Long, page: Int, size: Int, sort: String): List<ResponseTodoCardDto> {
-        val responseDtoList = mutableListOf<ResponseTodoCardDto>()
+    override fun getSortedCardList(id: Long, page: Int, size: Int, sort: String): List<ResponseTodoCardWithCommentListDto> {
+        val responseDtoList = mutableListOf<ResponseTodoCardWithCommentListDto>()
         when (sort) {
             "desc" -> todoCardRepository.getCardListDescByBoardId(id, page, size)
             "asc" -> todoCardRepository.getCardListAscByBoardId(id, page, size)
-            else -> throw NotFoundTargetException("해당 정렬 방식은 존재하지 않습니다.")
-        }.forEach { responseDtoList.add(it.toResponseDto()) }
+            else -> throw NotFoundTargetException("해당 $sort 정렬 방식은 존재하지 않습니다.")
+        }.forEach {
+            responseDtoList.add(
+                ResponseTodoCardWithCommentListDto(it.toResponseDto(), commentService.getCommentListByCardId(it.id!!))
+            )
+        }
 
         return responseDtoList
     }
 
     @Transactional
     override fun completedChange(id: Long): Boolean {
-        val findCard = findTodoCardById(id)
+        val findCard = getTodoCardById(id)
 
-        return todoCardRepository.completedChange(findCard)
+        return auth.checkAuth(findCard.owner) { todoCardRepository.completedChange(findCard) }
     }
 }
