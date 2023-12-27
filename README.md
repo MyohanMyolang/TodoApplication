@@ -1,4 +1,19 @@
-# 주특기 순력 개인과제
+# Todo Application
+
+## 실행 방법
+
+resources에 .env 파일을 만든다.
+
+```kotlin
+POSTGRES_URL = "db URL"
+POSTGRES_ID = "db ID"
+POSTGRES_PW = "db PW"
+```
+위와 같이 입력한다.
+
+---
+
+# 주특기 숙련 개인과제
 
 # Step 1
 - ## 할일카드 작성 기능
@@ -23,6 +38,13 @@
 - ## 선택한 할 일 삭제 기능
     - 선택한 게시글을 삭제할 수 있습니다.
 
+## ERD
+![image](https://github.com/MyohanMyolang/TodoApplication/assets/85920191/02a78baa-fe2b-47fb-bb00-dbed58da82a1)
+
+## Swagger
+
 ---
 
 # Step 2
+
+---
