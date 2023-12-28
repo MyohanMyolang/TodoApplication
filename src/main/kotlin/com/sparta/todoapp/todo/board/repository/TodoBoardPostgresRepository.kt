@@ -1,6 +1,7 @@
 package com.sparta.todoapp.todo.board.repository
 
 import com.sparta.todoapp.common.member.entity.MemberEntity
+import com.sparta.todoapp.system.error.exception.NotFoundTargetException
 import com.sparta.todoapp.todo.board.domain.TodoBoard
 import com.sparta.todoapp.todo.entity.TodoBoardEntity
 import com.sparta.todoapp.todo.facade.TodoBoardEntityRepository
@@ -19,6 +20,12 @@ class TodoBoardPostgresRepository(
         val entity = TodoBoardEntity.from(todoBoard, owner);
         return todoBoardEntityRepository.save(entity)
     }
+
+    override fun findBoardListByName(name: String): List<TodoBoardEntity> {
+        return todoBoardEntityRepository.findAllByBoardName(name)
+    }
+
+
 
     override fun findBoardById(id: Long) = todoBoardEntityRepository.findByIdOrNull(id)
 

@@ -3,15 +3,13 @@ package com.sparta.todoapp.system.error.exception
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.system.error.ErrorCode
 import com.sparta.todoapp.system.error.ErrorObject
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageNotReadableException
+import jakarta.validation.ConstraintViolationException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
-class TodoExceptionHandler {
+class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun dtoValidateError(error: MethodArgumentNotValidException) = responseEntity(ErrorCode.Validation.status) {
@@ -32,5 +30,24 @@ class TodoExceptionHandler {
     @ExceptionHandler(UnauthorizedException::class)
     fun unauthorizedError(error: UnauthorizedException) = responseEntity(ErrorCode.Unauthorized.status) {
         ErrorObject(ErrorCode.Unauthorized.message, error.message)
+    }
+
+    @ExceptionHandler(AlreadyHasMember::class)
+    fun alreadyHasMemberError(error: AlreadyHasMember) = responseEntity(ErrorCode.AlreadyHasMember.status) {
+        ErrorObject(ErrorCode.AlreadyHasMember.message, error.message)
+    }
+
+    @ExceptionHandler(AccessAuthException::class)
+    fun accessAuthError(error: AccessAuthException) = responseEntity(ErrorCode.Forbidden.status) {
+        ErrorObject(ErrorCode.Forbidden.message, error.message)
+    }
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun constraintViolationError(error: ConstraintViolationException) = responseEntity(ErrorCode.Validation.status) {
+        val errorMap = mutableMapOf<String, String>();
+        error.constraintViolations.forEachIndexed { index, it ->
+            errorMap["reason_$index"] = it.messageTemplate
+        }
+        ErrorObject(ErrorCode.Validation.message, errorMap)
     }
 }

@@ -9,5 +9,5 @@ interface ICommentRepository {
     fun findCommentById(id: Long?): CommentEntity?
     fun updateComment(domain: Comment, entity: CommentEntity): CommentEntity
     fun deleteComment(entity: CommentEntity): CommentEntity
-    fun findAllByTodoCardDetail(cardId: Long): List<CommentEntity>
+    fun findAllByTodoCardDetailId(cardId: Long): List<CommentEntity>
 }

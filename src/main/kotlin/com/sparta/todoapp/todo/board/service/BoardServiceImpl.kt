@@ -26,6 +26,17 @@ class BoardServiceImpl @Autowired constructor(
         return todoBoardRepository.addBoard(TodoBoard.from(requestTodoBoardDto), owner).toResponseDto()
     }
 
+    override fun getBoardListByName(name: String): List<ResponseTodoBoardDto> {
+        return todoBoardRepository.findBoardListByName(name).run {
+            val resultList = mutableListOf<ResponseTodoBoardDto>()
+            if (this.isEmpty()) throw NotFoundTargetException("${name}의 Board가 존재하지 않습니다.")
+            this.forEach {
+                resultList.add(it.toResponseDto())
+            }
+            resultList
+        }
+    }
+
     /**
      * size는 요청할 때 고정으로 보내야 중복 없이 전달 된다.
      * @param page 해당 페이지
@@ -35,7 +46,7 @@ class BoardServiceImpl @Autowired constructor(
     @Transactional
     override fun getTodoBoardList(page: Int, size: Int): ResponseTodoBoardWithPageDto {
         val foundPage = todoBoardRepository.paginationFindAll(page, size).apply {
-            if (this.totalPages < page && page > 1) throw NotFoundTargetException("페이지가 존재하지 않습니다.")
+            if (this.totalPages < page) throw NotFoundTargetException("페이지가 존재하지 않습니다.")
         }
         val responseDtoList = mutableListOf<ResponseTodoBoardDto>();
         foundPage.forEach { responseDtoList.add(it.toResponseDto()) }

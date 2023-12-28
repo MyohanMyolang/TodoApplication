@@ -5,9 +5,8 @@ import com.sparta.todoapp.todo.card.domain.TodoCard
 import com.sparta.todoapp.todo.card.dto.*
 import com.sparta.todoapp.todo.card.entity.TodoCardEntity
 import com.sparta.todoapp.todo.card.repository.ITodoCardRepository
-import com.sparta.todoapp.todo.comment.service.CommentService
 import com.sparta.todoapp.system.error.exception.NotFoundTargetException
-import com.sparta.todoapp.todo.service.BoardService
+import com.sparta.todoapp.todo.board.repository.ITodoBoardRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -15,20 +14,19 @@ import org.springframework.stereotype.Service
 class CardServiceImpl(
     private val auth: IAuth,
     private val todoCardRepository: ITodoCardRepository,
-    private val todoBoardService: BoardService,
-    private val commentService: CommentService
+    private val todoBoardRepository: ITodoBoardRepository
 ) : CardService {
 
 
     override fun getTodoCardById(id: Long): TodoCardEntity =
-        todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
+        todoCardRepository.findCardById(id) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
 
     /**
      * @throws NotFoundTargetException Board가 존재하지 않으면 던집니다.
      */
     @Transactional
     override fun addTodoCard(requestTodoCard: RequestTodoCardDto): ResponseTodoCardDetailDto {
-        val owner = todoBoardService.getBoardById(requestTodoCard.boardId!!).owner
+        val owner = todoBoardRepository.findBoardById(requestTodoCard.boardId!!)?.owner ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
 
         return auth.checkAuth(owner) {
             todoCardRepository.addCard(TodoCard.from(requestTodoCard), auth.getCurrentMemberEntity())
@@ -36,10 +34,9 @@ class CardServiceImpl(
         }
     }
 
-    override fun getTodoCardDetailByIdWithCommentList(id: Long): ResponseTodoCardDetailWithCommentListDto {
+    override fun getTodoCardDetailById(id: Long): ResponseTodoCardDetailDto {
         val findCard = getTodoCardById(id)
-        val commentListDto = commentService.getCommentListByCardId(id)
-        return ResponseTodoCardDetailWithCommentListDto(findCard.toDetailResponseDto(), commentListDto)
+        return findCard.toDetailResponseDto()
     }
 
     /**
@@ -66,16 +63,14 @@ class CardServiceImpl(
         }
     }
 
-    override fun getSortedCardList(id: Long, page: Int, size: Int, sort: String): List<ResponseTodoCardWithCommentListDto> {
-        val responseDtoList = mutableListOf<ResponseTodoCardWithCommentListDto>()
+    override fun getSortedCardList(boardId: Long, page: Int, size: Int, sort: String): List<ResponseTodoCardDto> {
+        val responseDtoList = mutableListOf<ResponseTodoCardDto>()
         when (sort) {
-            "desc" -> todoCardRepository.getCardListDescByBoardId(id, page, size)
-            "asc" -> todoCardRepository.getCardListAscByBoardId(id, page, size)
-            else -> throw NotFoundTargetException("해당 $sort 정렬 방식은 존재하지 않습니다.")
+            "desc" -> todoCardRepository.getCardListDescByBoardId(boardId, page, size)
+            "asc" -> todoCardRepository.getCardListAscByBoardId(boardId, page, size)
+            else -> throw Exception("이 에러가 발생할 경우 문의 주십시오.")
         }.forEach {
-            responseDtoList.add(
-                ResponseTodoCardWithCommentListDto(it.toResponseDto(), commentService.getCommentListByCardId(it.id!!))
-            )
+            responseDtoList.add(it.toResponseDto())
         }
 
         return responseDtoList

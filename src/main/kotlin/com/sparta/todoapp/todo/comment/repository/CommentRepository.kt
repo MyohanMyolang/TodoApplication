@@ -20,6 +20,6 @@ class CommentRepository(
         return entity
     }
 
-    override fun findAllByTodoCardDetail(cardId: Long) =
+    override fun findAllByTodoCardDetailId(cardId: Long) =
         commentEntityRepository.findAllByCardDetailId(cardId)
 }

@@ -10,4 +10,5 @@ interface ITodoBoardRepository {
     fun findAll(): MutableList<TodoBoardEntity>
     fun addBoard(todoBoard: TodoBoard, owner: MemberEntity): TodoBoardEntity
     fun findBoardById(id: Long): TodoBoardEntity?
+    fun findBoardListByName(name: String): List<TodoBoardEntity>
 }

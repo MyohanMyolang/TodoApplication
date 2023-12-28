@@ -51,7 +51,7 @@ class CommentServiceImpl(
     }
 
     override fun getCommentListByCardId(cardId: Long): List<ResponseCommentDto> =
-        commentRepository.findAllByTodoCardDetail(cardId).run {
+        commentRepository.findAllByTodoCardDetailId(cardId).run {
             val result = mutableListOf<ResponseCommentDto>()
             this.forEach { result.add(it.toResponseDto()) }
             result

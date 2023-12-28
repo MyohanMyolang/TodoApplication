@@ -3,7 +3,9 @@ package com.sparta.todoapp.auth
 import com.sparta.todoapp.auth.dto.SignDto
 import com.sparta.todoapp.common.member.entity.MemberEntity
 import com.sparta.todoapp.common.member.repository.MemberEntityRepository
+import com.sparta.todoapp.system.error.exception.AccessAuthException
 import com.sparta.todoapp.system.error.exception.NotFoundTargetException
+import com.sparta.todoapp.system.error.exception.UnauthorizedException
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.logging.log4j.util.Base64Util
 
@@ -13,7 +15,7 @@ class BasicAuth(
 ) : IAuth {
 
     fun getCurrentMemberKey(): String {
-        return request.getHeader("Authorization") ?: throw TODO("로그인 안됨");
+        return request.getHeader("Authorization") ?: throw UnauthorizedException("로그인이 되어있지 않습니다.")
     }
 
     override fun getCurrentMemberEntity(): MemberEntity {
@@ -30,7 +32,7 @@ class BasicAuth(
         val splitHeader = headerAuth.split(" ")
         val type = splitHeader[0]
         val key = splitHeader[1]
-        if (owner.key != key) TODO("해당 권한 없음")
+        if (owner.key != key) throw AccessAuthException("접근 권한이 없습니다.")
         return func()
     }
 }
