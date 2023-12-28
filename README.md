@@ -81,23 +81,55 @@ POSTGRES_PW = "db PW"
   - 수정기능 성공: status 200 OK
   - 삭제기능 성공: status 204 No Content
   - 작성, 수정기능 실패: status 400 Bad Request
+
+# Step 4
+- 할 일 카드 목록 api의 응답에, 연관된 댓글 내용을 추가해주세요.
+  - 할 일 목록과 댓글 목록을 효율적으로 가져와서 매칭하려면 어떻게 해야 할까요?
+  - N + 1 query 문제 알아보기
+
+- 할 일 카드 목록 api에 pagination 기능을 추가해주세요.
+  - 사용자가 많아져서 할 일 카드가 너무 많아지면 어떤 일이 벌어질까요?
+  - offset 기반 pagination과 cursor 기반 pagination에 대해 알아보기
+
+- 회원가입, 로그인 기능을 추가해주세요. 로그인 한 사용자가 자신의 할 일, 댓글만 수정, 삭제할 수 있게 해주세요.
+  - 인증, 인가에 대해 알아보기: 요청한 사용자가 누구인지, api를 호출할 권한이 있는지를 어떻게 알 수 있을까요?
+  - basic authentication과 bearer authentication에 대해 알아보기
+  - basic auth에 비해 token 기반 auth가 가지는 장점이 무엇일까요?
+
 ## ERD
 
-![erd](https://private-user-images.githubusercontent.com/85920191/293009938-4bb9470a-f477-4e40-b91b-fb73a68fc737.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDM2NzE5OTIsIm5iZiI6MTcwMzY3MTY5MiwicGF0aCI6Ii84NTkyMDE5MS8yOTMwMDk5MzgtNGJiOTQ3MGEtZjQ3Ny00ZTQwLWI5MWItZmI3M2E2OGZjNzM3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFJV05KWUFYNENTVkVINTNBJTJGMjAyMzEyMjclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjMxMjI3VDEwMDgxMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWU3ODI4MDYxMzdmNmRiZTUwMDk2M2NlN2FjMTkzNTg5MTMxZmIzYTI4YTExN2ZiZjFiN2VhZDNmZTZjNWEzNjYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.8Zh5tzqnH5N4U7UCnY-kq95rNmHfGJ0U3rxs0y9AiSU)
+![image](https://github.com/MyohanMyolang/TodoApplication/assets/85920191/4bb9470a-f477-4e40-b91b-fb73a68fc737)
 
 ## API 명세서
-
-### auth
-
-### comment
-
-### board
-
-![image](https://github.com/MyohanMyolang/TodoApplication/assets/85920191/ff59fe3f-0e89-4c7e-9a5a-af874e293c59)
-
-### card
-
----
+/swagger-ui/index.html
 
 
 ---
+
+# 추후 추가 가능성 있는 것
+- jwt 도입
+- 패키지 구조 바꿔보기
+> 📦tree </br>
+> ┣ 📂controller </br>
+> ┣ 📂domain </br>
+> ┃ ┣ 📂member </br>
+> ┃ ┃ ┣ 📂entity </br>
+> ┃ ┃ ┣ 📂repository </br>
+> ┃ ┃ ┗ 📂service </br>
+> ┃ ┣ 📂board </br>
+> ┃ ┃ ┣ 📂entity </br>
+> ┃ ┃ ┣ 📂repository </br>
+> ┃ ┃ ┗ 📂service </br>
+> ┃ ┣ 📂card </br>
+> ┃ ┃ ┣ 📂entity </br>
+> ┃ ┃ ┣ 📂repository </br>
+> ┃ ┃ ┗ 📂service </br>
+> ┃ ┗ 📂comment </br>
+> ┃ ┃ ┣ 📂entity </br>
+> ┃ ┃ ┣ 📂repository </br>
+> ┃ ┃ ┗ 📂service </br>
+> ┗ 📂service </br>
+
+# 생각만 해본 것
+- GraphQl을 도입시키면 현재 Comment랑 같이 가져오는 부분을 처리 시키도록 하면 서로의 영역에 침범하지 않고 가져올 수 있지 않을까 생각.
+- Swagger Annotation의 코드 가독성 저하로 인하여 테스트 코드 작성과 Spring RestDocs를 도입해보면 어떨까 생각.

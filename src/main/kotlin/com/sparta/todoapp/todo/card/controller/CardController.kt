@@ -62,6 +62,7 @@ class CardController(
         cardService.addTodoCard(requestTodoCardDto)
     }
 
+    @Operation(summary = "Card 수정")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -94,6 +95,7 @@ class CardController(
         cardService.updateTodoCardById(id, updateData)
     }
 
+    @Operation(summary = "Card 삭제")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "Card 삭제 성공시 발생합니다. 삭제 된 Card의 정보를 반환합니다."),
