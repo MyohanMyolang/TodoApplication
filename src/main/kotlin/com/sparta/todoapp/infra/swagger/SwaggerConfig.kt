@@ -11,23 +11,23 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @SecurityScheme(
-    type = SecuritySchemeType.APIKEY, `in` = SecuritySchemeIn.HEADER,
-    name = "Authorization", description = "Auth Token",
+	type = SecuritySchemeType.APIKEY, `in` = SecuritySchemeIn.HEADER,
+	name = "Authorization", description = "Auth Token",
 )
 @Configuration
 class SwaggerConfig {
 
-    @Bean
-    fun openAPI(): OpenAPI = OpenAPI()
-        .components(Components())
-        .info(
-            Info()
-                .title("Todo API")
-                .description("TODO API Scheme")
-                .version("1.0.0")
-        ).security(
-            listOf(
-                SecurityRequirement().addList("Authorization")
-            )
-        )
+	@Bean
+	fun openAPI(): OpenAPI = OpenAPI()
+		.components(Components())
+		.info(
+			Info()
+				.title("Todo API")
+				.description("TODO API Scheme")
+				.version("1.0.0")
+		).security(
+			listOf(
+				SecurityRequirement().addList("Authorization")
+			)
+		)
 }

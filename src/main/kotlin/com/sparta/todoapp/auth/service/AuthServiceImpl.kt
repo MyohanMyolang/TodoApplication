@@ -11,25 +11,25 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthServiceImpl(
-    private val auth: IAuth,
-    private val authRepository: IAuthRepository
+	private val auth: IAuth,
+	private val authRepository: IAuthRepository
 ) : AuthService {
 
-    fun getMemberByMemberId(memberId: String) =
-        authRepository.findByMemberId(memberId) ?: throw NotFoundTargetException("해당 Id는 존재하지 않습니다.")
+	fun getMemberByMemberId(memberId: String) =
+		authRepository.findByMemberId(memberId) ?: throw NotFoundTargetException("해당 Id는 존재하지 않습니다.")
 
-    @Transactional
-    override fun signUp(signDto: SignDto): Boolean {
-        if (authRepository.findByMemberId(signDto.id!!) != null) throw AlreadyHasMember("id가 중복되었습니다.")
-        authRepository.signUp(Member.of(signDto, auth.generateKey(signDto)))
-        return true
-    }
+	@Transactional
+	override fun signUp(signDto: SignDto): Boolean {
+		if (authRepository.findByMemberId(signDto.id!!) != null) throw AlreadyHasMember("id가 중복되었습니다.")
+		authRepository.signUp(Member.of(signDto, auth.generateKey(signDto)))
+		return true
+	}
 
-    override fun signIn(signDto: SignDto): String {
-        val memberEntity = getMemberByMemberId(signDto.id!!)
-        if (!Member.of(signDto, "").isSameIdAndPw(memberEntity)) throw NotFoundTargetException("비밀번호가 틀립니다.")
+	override fun signIn(signDto: SignDto): String {
+		val memberEntity = getMemberByMemberId(signDto.id!!)
+		if (!Member.of(signDto, "").isSameIdAndPw(memberEntity)) throw NotFoundTargetException("비밀번호가 틀립니다.")
 
-        return "basic ${memberEntity.key!!}"
-    }
+		return "basic ${memberEntity.key!!}"
+	}
 
 }

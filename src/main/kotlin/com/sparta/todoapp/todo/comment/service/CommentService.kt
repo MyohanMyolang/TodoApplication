@@ -7,9 +7,9 @@ import com.sparta.todoapp.todo.comment.dto.UpdateCommentDto
 import com.sparta.todoapp.todo.comment.entity.CommentEntity
 
 interface CommentService {
-    fun addComment(requestDto: RequestCommentDto): ResponseCommentDto
-    fun updateComment(updateDto: UpdateCommentDto): ResponseCommentDto
-    fun deleteComment(deleteDto: DeleteCommentDto): ResponseCommentDto
-    fun getCommentById(id: Long): CommentEntity
-    fun getCommentListByCardId(cardId: Long): List<ResponseCommentDto>
+	fun addComment(requestDto: RequestCommentDto): ResponseCommentDto
+	fun updateComment(updateDto: UpdateCommentDto): ResponseCommentDto
+	fun deleteComment(deleteDto: DeleteCommentDto): ResponseCommentDto
+	fun getCommentById(id: Long): CommentEntity
+	fun getCommentListByCardId(cardId: Long): List<ResponseCommentDto>
 }

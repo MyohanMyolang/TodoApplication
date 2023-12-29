@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class AuthConfig {
-    @Bean
-    fun authConfig1(request: HttpServletRequest, memberEntityRepository: MemberEntityRepository): IAuth =
-        BasicAuth(request, memberEntityRepository);
+	@Bean
+	fun authConfig1(request: HttpServletRequest, memberEntityRepository: MemberEntityRepository): IAuth =
+		BasicAuth(request, memberEntityRepository)
 
-    @Bean
-    fun authRepositoryConfig(memberEntityRepository: MemberEntityRepository): IAuthRepository =
-        AuthRepository(memberEntityRepository)
+	@Bean
+	fun authRepositoryConfig(memberEntityRepository: MemberEntityRepository): IAuthRepository =
+		AuthRepository(memberEntityRepository)
 }

@@ -5,6 +5,6 @@ import com.sparta.todoapp.common.member.entity.MemberEntity
 
 interface IAuthRepository {
 
-    fun signUp(memberDomain: Member): MemberEntity
-    fun findByMemberId(memberId: String): MemberEntity?
+	fun signUp(memberDomain: Member): MemberEntity
+	fun findByMemberId(memberId: String): MemberEntity?
 }
