@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class CommentConfig {
-    @Bean
-    fun commentRepositoryConfig(
-        commentEntityRepository: CommentEntityRepository
-    ) = CommentRepository(commentEntityRepository)
+	@Bean
+	fun commentRepositoryConfig(
+		commentEntityRepository: CommentEntityRepository
+	) = CommentRepository(commentEntityRepository)
 }
