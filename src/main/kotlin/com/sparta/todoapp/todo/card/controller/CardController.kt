@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Pattern
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -134,10 +136,16 @@ class CardController(
 			regexp = "^(desc|asc)$", message = "sort는 desc 또는 asc 둘 중 하나의 값을 가져야 합니다."
 		) sort: String
 	) = responseEntity(HttpStatus.OK) {
+		val cardList = cardService.getSortedCardList(boardId, page, 5, sort)
 		val resultList = mutableListOf<ResponseTodoCardWithCommentListDto>()
-		cardService.getSortedCardList(boardId, page, 5, sort).forEach {
-			val commentList = commentService.getCommentListByCardId(it.id)
-			resultList.add(ResponseTodoCardWithCommentListDto(it, commentList))
+
+		runBlocking {
+			val commentResultList = cardList.map {
+				async { commentService.getCommentListByCardId(it.id) }
+			}
+			commentResultList.forEachIndexed { index, deferred ->
+				resultList.add(ResponseTodoCardWithCommentListDto(cardList[index], deferred.await()))
+			}
 		}
 		resultList
 	}

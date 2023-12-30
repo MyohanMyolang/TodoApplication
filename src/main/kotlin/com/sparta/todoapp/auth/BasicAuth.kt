@@ -23,6 +23,8 @@ class BasicAuth(
 		return memberEntityRepository.findByKey(key) ?: throw NotFoundTargetException("로그인 상태를 확인하여 주십시오.")
 	}
 
+	override fun getType(): String = "basic"
+
 	override fun generateKey(signDto: SignDto): String {
 		return Base64Util.encode("${signDto.id}:${signDto.password}")
 	}

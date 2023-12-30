@@ -29,7 +29,7 @@ class AuthServiceImpl(
 		val memberEntity = getMemberByMemberId(signDto.id!!)
 		if (!Member.of(signDto, "").isSameIdAndPw(memberEntity)) throw NotFoundTargetException("비밀번호가 틀립니다.")
 
-		return "basic ${memberEntity.key!!}"
+		return "${auth.getType()} ${memberEntity.key!!}"
 	}
 
 }

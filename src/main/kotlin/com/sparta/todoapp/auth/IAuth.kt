@@ -6,5 +6,6 @@ import com.sparta.todoapp.common.member.entity.MemberEntity
 interface IAuth {
 	fun generateKey(signDto: SignDto): String
 	fun getCurrentMemberEntity(): MemberEntity
+	fun getType(): String
 	fun <T> checkAuth(owner: MemberEntity, func: () -> T): T
 }
