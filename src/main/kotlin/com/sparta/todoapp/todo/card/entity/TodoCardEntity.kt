@@ -1,7 +1,5 @@
 package com.sparta.todoapp.todo.card.entity
 
-import com.sparta.todoapp.common.member.entity.MemberEntity
-import com.sparta.todoapp.todo.board.entity.TodoBoardEntity
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDetailDto
 import com.sparta.todoapp.todo.card.dto.ResponseTodoCardDto
 import jakarta.persistence.*
@@ -24,19 +22,17 @@ class TodoCardEntity(
 	@JoinColumn(name = "detail")
 	val todoCardDetailEntity: TodoCardDetailEntity,
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "owner", referencedColumnName = "id", nullable = false)
-	var owner: MemberEntity
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "owner", referencedColumnName = "id", nullable = false)
+//	var owner: MemberEntity
 ) {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	val id: Long? = null
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "board", referencedColumnName = "id", insertable = false, updatable = false)
-	val board: TodoBoardEntity? = null
+	@Column(name = "owner")
+	val owner: Long? = null
 
 	@Column(name = "date")
 	private val date: LocalDateTime = LocalDateTime.now()

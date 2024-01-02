@@ -7,6 +7,7 @@ import com.sparta.todoapp.todo.board.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.board.dto.ResponseTodoBoardDto
 import com.sparta.todoapp.todo.board.dto.ResponseTodoBoardWithPageDto
 import com.sparta.todoapp.todo.board.repository.ITodoBoardRepository
+import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -15,14 +16,15 @@ import org.springframework.stereotype.Service
 @Service
 class BoardServiceImpl @Autowired constructor(
 	private val todoBoardRepository: ITodoBoardRepository,
-	private val auth: IAuth
+	private val auth: IAuth,
+	private val entityManager: EntityManager
 ) : BoardService {
 
 	@Transactional
 	override fun addTodoBoard(requestTodoBoardDto: RequestTodoBoardDto): ResponseTodoBoardDto {
 		val owner = auth.getCurrentMemberEntity()
-
-		return todoBoardRepository.addBoard(TodoBoard.from(requestTodoBoardDto), owner).toResponseDto()
+		val board = TodoBoard.from(requestTodoBoardDto)
+		return todoBoardRepository.addBoard(board, owner).toResponseDto()
 	}
 
 	override fun getBoardListByName(name: String): List<ResponseTodoBoardDto> {
@@ -54,4 +56,9 @@ class BoardServiceImpl @Autowired constructor(
 
 	override fun getBoardById(id: Long) =
 		todoBoardRepository.findBoardById(id) ?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
+
+	override fun deleteBoardById(id: Long) {
+		val board = getBoardById(id)
+		todoBoardRepository.deleteBoard(board)
+	}
 }

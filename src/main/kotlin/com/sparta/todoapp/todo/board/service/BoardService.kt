@@ -10,4 +10,5 @@ interface BoardService {
 	fun getTodoBoardList(page: Int, size: Int): ResponseTodoBoardWithPageDto
 	fun getBoardById(id: Long): TodoBoardEntity
 	fun getBoardListByName(name: String): List<ResponseTodoBoardDto>
+	fun deleteBoardById(id: Long)
 }

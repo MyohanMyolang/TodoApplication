@@ -8,6 +8,7 @@ import com.sparta.todoapp.system.error.exception.NotFoundTargetException
 import com.sparta.todoapp.system.error.exception.UnauthorizedException
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.logging.log4j.util.Base64Util
+import org.springframework.data.repository.findByIdOrNull
 
 class BasicAuth(
 	private val request: HttpServletRequest,
@@ -29,12 +30,15 @@ class BasicAuth(
 		return Base64Util.encode("${signDto.id}:${signDto.password}")
 	}
 
-	override fun <T> checkAuth(owner: MemberEntity, func: () -> T): T {
+	override fun <T> checkPermission(ownerId: Long, func: () -> T): T {
 		val headerAuth = getCurrentMemberKey()
 		val splitHeader = headerAuth.split(" ")
 		val type = splitHeader[0]
 		val key = splitHeader[1]
-		if (owner.key != key) throw AccessAuthException("접근 권한이 없습니다.")
+
+		val member = memberEntityRepository.findByIdOrNull(ownerId) ?: throw NotFoundTargetException("Member가 없습니다.")
+
+		if (member.key != key) throw AccessAuthException("접근 권한이 없습니다.")
 		return func()
 	}
 }

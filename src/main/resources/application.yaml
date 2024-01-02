@@ -3,13 +3,13 @@ server:
 
 spring:
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     properties:
       hibernate:
-        show_sql: false
-        format_sql: false
+        show_sql: true
+        format_sql: true
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_ID}

@@ -11,4 +11,5 @@ interface ITodoBoardRepository {
 	fun addBoard(todoBoard: TodoBoard, owner: MemberEntity): TodoBoardEntity
 	fun findBoardById(id: Long): TodoBoardEntity?
 	fun findBoardListByName(name: String): List<TodoBoardEntity>
+	fun deleteBoard(entity: TodoBoardEntity)
 }
