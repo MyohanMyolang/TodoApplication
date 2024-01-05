@@ -33,15 +33,13 @@ class CardServiceImpl(
 			?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
 
 		return auth.checkAuth(owner) {
-			todoCardRepository.addCard(TodoCard.from(requestTodoCard), auth.getCurrentMemberEntity())
+			todoCardRepository.addCard(TodoCard.from(requestTodoCard), owner)
 				.toDetailResponseDto()
 		}
 	}
 
-	override fun getTodoCardDetailById(id: Long): ResponseTodoCardDetailDto {
-		val findCard = getTodoCardById(id)
-		return findCard.toDetailResponseDto()
-	}
+	override fun getTodoCardDetailById(id: Long): ResponseTodoCardDetailDto =
+		getTodoCardById(id).toDetailResponseDto()
 
 	/**
 	 * @throws NotFoundTargetException id와 일치하는 카드가 존재 하지 않을 경우 던집니다.

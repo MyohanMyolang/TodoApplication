@@ -10,13 +10,15 @@ class TodoCardDetailEntity(
 	var description: String,
 
 	@Column(name = "writer")
-	var writer: String
+	var writer: String,
+
+	@OneToMany(mappedBy = "todoCardDetail", cascade = [CascadeType.REMOVE])
+	private val commentList: List<CommentEntity> = mutableListOf()
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private val id: Long? = null
 
-	@OneToMany(mappedBy = "todoCardDetail", cascade = [CascadeType.REMOVE])
-	private val commentList: List<CommentEntity> = mutableListOf()
+
 
 }

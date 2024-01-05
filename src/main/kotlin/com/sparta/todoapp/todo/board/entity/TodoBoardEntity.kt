@@ -13,15 +13,15 @@ class TodoBoardEntity(
 	private var boardName: String,
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "owner", referencedColumnName = "id", nullable = false)
-	var owner: MemberEntity
+	@JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+	var owner: MemberEntity,
+
+	@OneToMany(mappedBy = "board", cascade = [CascadeType.REMOVE])
+	private val todoCardEntity: List<TodoCardEntity> = mutableListOf()
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private val id: Long? = null
-
-	@OneToMany(mappedBy = "board", cascade = [CascadeType.REMOVE])
-	val todoCardEntity: List<TodoCardEntity> = mutableListOf()
 
 
 	fun toResponseDto(): ResponseTodoBoardDto = ResponseTodoBoardDto(id = this.id!!, ownerName = this.boardName)
