@@ -14,10 +14,9 @@ class TodoBoardPostgresRepository(
 	override fun paginationFindAll(page: Int, size: Int) =
 		todoBoardEntityRepository.findAll(PageRequest.of(page - 1, size))
 
-	override fun addBoard(todoBoard: TodoBoard, owner: MemberEntity): TodoBoardEntity {
-		val entity = TodoBoardEntity.from(todoBoard, owner)
-		return todoBoardEntityRepository.save(entity)
-	}
+	override fun addBoard(todoBoard: TodoBoard, owner: MemberEntity): TodoBoardEntity =
+		todoBoardEntityRepository.save(todoBoard.toEntityFrom(owner))
+
 
 	override fun findBoardListByName(name: String): List<TodoBoardEntity> {
 		return todoBoardEntityRepository.findAllByBoardName(name)

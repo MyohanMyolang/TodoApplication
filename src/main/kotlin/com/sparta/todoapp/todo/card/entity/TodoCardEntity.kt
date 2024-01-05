@@ -25,7 +25,7 @@ class TodoCardEntity(
 	val todoCardDetailEntity: TodoCardDetailEntity,
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "owner", referencedColumnName = "id", nullable = false)
+	@JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
 	var owner: MemberEntity
 ) {
 

@@ -7,22 +7,21 @@ import jakarta.persistence.*
 @Table(name = "member")
 class MemberEntity(
 	@Column(name = "member_id", unique = true, nullable = false)
-	var memberId: String? = null,
+	var memberId: String,
 
 	@Column(name = "password", nullable = false)
-	var password: String? = null,
+	var password: String,
 
 	@Column(name = "key", nullable = false)
-	var key: String? = null
+	var key: String,
+
+	@OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
+	private val cardList: List<TodoCardEntity> = mutableListOf(),
+
+	@OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
+	private val boardList: List<TodoCardEntity> = mutableListOf()
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	val id: Long? = null
-
-
-	@OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
-	val cardList: List<TodoCardEntity> = mutableListOf()
-
-	@OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
-	val boardList: List<TodoCardEntity> = mutableListOf()
 }

@@ -7,7 +7,7 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "comment")
 class CommentEntity(
-	@Column(name = "todo_card_detail")
+	@Column(name = "todo_card_detail_id")
 	val cardDetailId: Long,
 
 	@Column(name = "user_name")
