@@ -9,6 +9,15 @@ import com.sparta.todoapp.system.error.exception.UnauthorizedException
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.logging.log4j.util.Base64Util
 
+
+/**
+ * NOTE:
+ *  1. 로그인 진행 후 토큰가져온다.
+ *  2. 프론트 엔드 -> 토큰을 HttpHeader Authorization에 담는다.
+ *  3. 인증작업을 거칠 때 Authorization을 확인한다.
+ *  4. 확인 작업 후 권한이 없다면 Exception을 던진다.
+ */
+
 class BasicAuth(
 	private val request: HttpServletRequest,
 	private val memberEntityRepository: MemberEntityRepository

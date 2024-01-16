@@ -15,44 +15,45 @@ import org.springframework.stereotype.Service
 
 @Service
 class CommentServiceImpl(
-	private val commentRepository: ICommentRepository,
-	private val todoCardRepository: ITodoCardRepository
+    private val commentRepository: ICommentRepository,
+    private val todoCardRepository: ITodoCardRepository
 ) : CommentService {
 
-	override fun getCommentById(id: Long): CommentEntity =
-		commentRepository.findCommentById(id) ?: throw NotFoundTargetException("Comment가 존재하지 않습니다.")
+    override fun getCommentById(id: Long): CommentEntity =
+        commentRepository.findCommentById(id) ?: throw NotFoundTargetException("Comment가 존재하지 않습니다.")
 
-	@Transactional
-	override fun addComment(requestDto: RequestCommentDto): ResponseCommentDto {
-		todoCardRepository.findCardById(requestDto.cardId!!) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
+    @Transactional
+    override fun addComment(requestDto: RequestCommentDto): ResponseCommentDto {
+        todoCardRepository.findCardById(requestDto.cardId!!) ?: throw NotFoundTargetException("Card가 존재하지 않습니다.")
 
-		return commentRepository.addComment(Comment.from(requestDto)).toResponseDto()
-	}
+        return commentRepository.addComment(Comment.from(requestDto)).toResponseDto()
+    }
 
-	@Transactional
-	override fun updateComment(updateDto: UpdateCommentDto): ResponseCommentDto {
-		val findComment = getCommentById(updateDto.id!!)
+    @Transactional
+    override fun updateComment(updateDto: UpdateCommentDto): ResponseCommentDto {
+        val findComment = getCommentById(updateDto.id!!)
 
-		val comment = Comment.of(updateDto, findComment.cardDetailId)
-		if (!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
+        val comment = Comment.of(updateDto, findComment.cardDetailId)
+        if (!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
 
-		return commentRepository.updateComment(comment, findComment).toResponseDto()
-	}
+        return commentRepository.updateComment(comment, findComment).toResponseDto()
+    }
 
-	@Transactional
-	override fun deleteComment(deleteDto: DeleteCommentDto): ResponseCommentDto {
-		val findComment = getCommentById(deleteDto.id!!)
+    @Transactional
+    override fun deleteComment(deleteDto: DeleteCommentDto): ResponseCommentDto {
+        val findComment = getCommentById(deleteDto.id!!)
 
-		val comment = Comment.from(deleteDto)
-		if (!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
+        val comment = Comment.from(deleteDto)
+        if (!comment.checkAuth(findComment)) throw UnauthorizedException("권한이 없습니다.")
 
-		return commentRepository.deleteComment(findComment).toResponseDto()
-	}
+        return commentRepository.deleteComment(findComment).toResponseDto()
+    }
 
-	override fun getCommentListByCardId(cardId: Long): List<ResponseCommentDto> =
-		commentRepository.findAllByTodoCardDetailId(cardId).run {
-			val result = mutableListOf<ResponseCommentDto>()
-			this.forEach { result.add(it.toResponseDto()) }
-			result
-		}
+    override fun getCommentListByCardId(cardId: Long): List<ResponseCommentDto> =
+        commentRepository.findAllByTodoCardDetailId(cardId).run {
+            val result = mutableListOf<ResponseCommentDto>()
+            this.forEach { result.add(it.toResponseDto()) }
+            result
+        }
+
 }
