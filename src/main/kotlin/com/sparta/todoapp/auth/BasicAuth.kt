@@ -23,7 +23,7 @@ class BasicAuth(
 	private val memberEntityRepository: MemberEntityRepository
 ) : IAuth {
 
-	fun getCurrentMemberKey(): String {
+	private fun getCurrentMemberKey(): String {
 		return request.getHeader("Authorization") ?: throw UnauthorizedException("로그인이 되어있지 않습니다.")
 	}
 
@@ -38,7 +38,7 @@ class BasicAuth(
 		return Base64Util.encode("${signDto.id}:${signDto.password}")
 	}
 
-	override fun <T> checkAuth(owner: MemberEntity, func: () -> T): T {
+	override fun <T> checkPermission(owner: MemberEntity, func: () -> T): T {
 		val headerAuth = getCurrentMemberKey()
 		val splitHeader = headerAuth.split(" ")
 		val type = splitHeader[0]

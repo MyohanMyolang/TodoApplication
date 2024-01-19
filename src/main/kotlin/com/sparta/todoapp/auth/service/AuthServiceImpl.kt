@@ -7,12 +7,14 @@ import com.sparta.todoapp.common.member.domain.Member
 import com.sparta.todoapp.system.error.exception.AlreadyHasMember
 import com.sparta.todoapp.system.error.exception.NotFoundTargetException
 import jakarta.transaction.Transactional
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AuthServiceImpl(
 	private val auth: IAuth,
-	private val authRepository: IAuthRepository
+	private val authRepository: IAuthRepository,
+	private val passwordEncoder: PasswordEncoder
 ) : AuthService {
 
 	fun getMemberByMemberId(memberId: String) =

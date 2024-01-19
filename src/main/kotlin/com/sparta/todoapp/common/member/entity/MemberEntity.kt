@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "member")
 class MemberEntity(
-	@Column(name = "member_id", unique = true, nullable = false)
+	@Column(name = "member_id", unique = true)
 	var memberId: String,
 
 	@Column(name = "password", nullable = false)

@@ -32,7 +32,7 @@ class CardServiceImpl(
 		val owner = todoBoardRepository.findBoardById(requestTodoCard.boardId!!)?.owner
 			?: throw NotFoundTargetException("Board가 존재하지 않습니다.")
 
-		return auth.checkAuth(owner) {
+		return auth.checkPermission(owner) {
 			todoCardRepository.addCard(TodoCard.from(requestTodoCard), owner)
 				.toDetailResponseDto()
 		}
@@ -48,7 +48,7 @@ class CardServiceImpl(
 	override fun updateTodoCardById(id: Long, updateData: UpdateTodoCardDto): ResponseTodoCardDetailDto {
 		val findCard = getTodoCardById(id)
 
-		return auth.checkAuth(findCard.owner) {
+		return auth.checkPermission(findCard.owner) {
 			todoCardRepository.updateDataByDto(findCard, updateData).toDetailResponseDto()
 		}
 	}
@@ -60,7 +60,7 @@ class CardServiceImpl(
 	override fun deleteTodoCardById(id: Long): ResponseTodoCardDetailDto {
 		val findCard = getTodoCardById(id)
 
-		return auth.checkAuth(findCard.owner) {
+		return auth.checkPermission(findCard.owner) {
 			todoCardRepository.deleteCard(findCard).toDetailResponseDto()
 		}
 	}
@@ -82,6 +82,6 @@ class CardServiceImpl(
 	override fun completedChange(id: Long): Boolean {
 		val findCard = getTodoCardById(id)
 
-		return auth.checkAuth(findCard.owner) { todoCardRepository.completedChange(findCard) }
+		return auth.checkPermission(findCard.owner) { todoCardRepository.completedChange(findCard) }
 	}
 }
