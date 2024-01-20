@@ -21,9 +21,9 @@ class SecurityConfig(
 			.csrf { it.disable() }
 			.cors { it.disable() }
 			.authorizeHttpRequests {
-				it.requestMatchers(HttpMethod.GET, "/todo/**")
+				it.requestMatchers(HttpMethod.GET, "/api/todo/**")
 				it.requestMatchers(
-					"/auth/**",
+					"/api/auth/**",
 					"/swagger-ui/**",
 					"/v3/api-docs/**",
 				).permitAll()
