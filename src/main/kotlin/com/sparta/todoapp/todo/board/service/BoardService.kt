@@ -1,4 +1,3 @@
-package com.sparta.todoapp.todo.board.service
 
 import com.sparta.todoapp.todo.board.dto.RequestTodoBoardDto
 import com.sparta.todoapp.todo.board.dto.ResponseTodoBoardDto
@@ -10,5 +9,4 @@ interface BoardService {
 	fun getTodoBoardList(page: Int, size: Int): ResponseTodoBoardWithPageDto
 	fun getBoardById(id: Long): TodoBoardEntity
 	fun getBoardListByName(name: String): List<ResponseTodoBoardDto>
-	fun deleteBoardById(id: Long)
 }
