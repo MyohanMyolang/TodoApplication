@@ -5,4 +5,5 @@ import com.sparta.todoapp.common.member.entity.MemberEntity
 interface IMemberRepository {
 	fun save(entity: MemberEntity): MemberEntity
 	fun findById(id: String): MemberEntity
+	fun findByIdOrNull(id: String): MemberEntity?
 }

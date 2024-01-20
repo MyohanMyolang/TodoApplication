@@ -10,6 +10,9 @@ class MemberRepository(
 	private val memberEntityRepository: MemberEntityRepository
 ) : IMemberRepository {
 	override fun save(entity: MemberEntity) = memberEntityRepository.save(entity)
-	override fun findById(id: String) = memberEntityRepository.findByIdOrNull(id) ?: throw NotFoundTargetException("해당 ID는 존재하지 않습니다.")
+	override fun findById(id: String) =
+		memberEntityRepository.findByIdOrNull(id) ?: throw NotFoundTargetException("해당 ID는 존재하지 않습니다.")
+
+	override fun findByIdOrNull(id: String): MemberEntity? = memberEntityRepository.findByIdOrNull(id)
 
 }
