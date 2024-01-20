@@ -1,8 +1,9 @@
 package com.sparta.todoapp.infra.security.config
 
-import com.sparta.todoapp.auth.jwt.JwtAuthenticationFilter
+import com.sparta.todoapp.common.member.auth.jwt.JwtAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -20,6 +21,7 @@ class SecurityConfig(
 			.csrf { it.disable() }
 			.cors { it.disable() }
 			.authorizeHttpRequests {
+				it.requestMatchers(HttpMethod.GET, "/todo/**")
 				it.requestMatchers(
 					"/auth/**",
 					"/swagger-ui/**",

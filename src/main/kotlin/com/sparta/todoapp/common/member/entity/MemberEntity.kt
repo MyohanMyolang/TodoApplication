@@ -1,27 +1,28 @@
 package com.sparta.todoapp.common.member.entity
 
-import com.sparta.todoapp.todo.card.entity.TodoCardEntity
+import com.sparta.todoapp.common.member.auth.dto.SignDto
+import com.sparta.todoapp.common.member.type.UserRole
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "member")
 class MemberEntity(
-	@Column(name = "member_id", unique = true)
+	@Id @Column(name = "member_id", unique = true)
 	var memberId: String,
 
 	@Column(name = "password", nullable = false)
 	var password: String,
 
-	@Column(name = "key", nullable = false)
-	var key: String,
-
-	@OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
-	private val cardList: List<TodoCardEntity> = mutableListOf(),
-
-	@OneToMany(mappedBy = "owner", cascade = [CascadeType.REMOVE])
-	private val boardList: List<TodoCardEntity> = mutableListOf()
+	@Enumerated(value = EnumType.STRING)
+	var role: UserRole
 ) {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	val id: Long? = null
+	fun isSamePassword(password: String) = this.password == password
+
+	companion object {
+		fun of(dto: SignDto, role: UserRole) = MemberEntity(
+			memberId = dto.id!!,
+			password = dto.password!!,
+			role = role
+		)
+	}
 }
