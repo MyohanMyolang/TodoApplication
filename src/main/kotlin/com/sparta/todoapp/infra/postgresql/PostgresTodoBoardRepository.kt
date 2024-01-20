@@ -6,10 +6,14 @@ import com.sparta.todoapp.domain.todo.board.repository.TodoBoardEntityRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-class PostgreSqlTodoBoardRepository(
+class PostgresTodoBoardRepository(
 	private val todoBoardEntityRepository: TodoBoardEntityRepository
 ) : ITodoBoardRepository {
 
 	override fun saveTodoBoard(entity: TodoBoardEntity) =
 		todoBoardEntityRepository.save(entity)
+
+	fun getTodoBoardList(page: Int){
+
+	}
 }

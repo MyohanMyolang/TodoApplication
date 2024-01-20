@@ -14,6 +14,13 @@ class TodoBoardService(
 	@Transactional
 	fun addTodoBoard(dto: TodoBoardReq, currentMember: MemberEntity) =
 		TodoBoardEntity.of(dto, currentMember)
-			.let{ todoBoardRepository.saveTodoBoard(it).toResponse() }
+			.let { todoBoardRepository.saveTodoBoard(it).toResponse() }
 
+	/**
+	 * TODO:
+	 *  1. BoardList를 가지고 온다. (Repository에서 FindAll을 걸었을 때, 숫자가 적을 경우
+	 */
+//	fun getTodoBoardList(page: Int) =
+//		todoBoardRepository.getBoardListByPage(page, 10)
+//			.let{}
 }

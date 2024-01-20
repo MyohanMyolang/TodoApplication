@@ -1,6 +1,6 @@
 package com.sparta.todoapp.api.todo.controller
 
-import com.sparta.todoapp.api.todo.service.TodoBoardApiService
+import com.sparta.todoapp.api.todo.service.TodoService
 import com.sparta.todoapp.domain.todo.board.dto.TodoBoardReq
 import com.sparta.todoapp.global.util.responseEntity
 import com.sparta.todoapp.infra.security.UserPrincipal
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/todo/board")
 @Validated
 class TodoBoardController(
-	private val todoBoardApiService: TodoBoardApiService
+	private val todoService: TodoService
 ) {
 
 	@PostMapping
@@ -27,7 +27,7 @@ class TodoBoardController(
 	) =
 		responseEntity(HttpStatus.CREATED) {
 			val userPrincipal = authentication.principal as UserPrincipal
-			todoBoardApiService.addTodoBoard(dto, userPrincipal.member)
+			todoService.addTodoBoard(dto, userPrincipal.member)
 		}
 
 }

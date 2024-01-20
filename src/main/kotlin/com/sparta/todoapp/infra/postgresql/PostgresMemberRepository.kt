@@ -1,12 +1,14 @@
-package com.sparta.todoapp.common.member.repository
+package com.sparta.todoapp.infra.postgresql
 
 import com.sparta.todoapp.common.member.entity.MemberEntity
+import com.sparta.todoapp.common.member.repository.IMemberRepository
+import com.sparta.todoapp.common.member.repository.MemberEntityRepository
 import com.sparta.todoapp.system.error.exception.NotFoundTargetException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
-class MemberRepository(
+class PostgresMemberRepository(
 	private val memberEntityRepository: MemberEntityRepository
 ) : IMemberRepository {
 	override fun save(entity: MemberEntity) = memberEntityRepository.save(entity)
