@@ -1,7 +1,11 @@
 package com.sparta.todoapp.common.member.auth.jwt
 
 
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.IncorrectClaimException
 import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.MissingClaimException
+import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -29,8 +33,6 @@ class JwtAuthenticationFilter(
 		response: HttpServletResponse,
 		filterChain: FilterChain
 	) {
-
-
 		val jwt = request.getBearerToken()
 
 		if (jwt != null) {
@@ -44,7 +46,11 @@ class JwtAuthenticationFilter(
 				}
 				.onFailure {
 					when (it) {
-						is MalformedJwtException -> TODO("제대로 된 JWT토큰 아님")
+						is SignatureException -> TODO("서명이 일치하지 않음")
+						is MalformedJwtException -> TODO("제대로 된 JWT Token 아님")
+						is IncorrectClaimException -> TODO("Claim 이 예상하던 값과 다름")
+						is MissingClaimException -> TODO("Claim Token 누락")
+						is ExpiredJwtException -> TODO("JWT Token 만료")
 						else -> throw TODO("뭔가 에러남 일단")
 					}
 				}
