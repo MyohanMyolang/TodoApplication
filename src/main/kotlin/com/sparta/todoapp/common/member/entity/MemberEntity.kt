@@ -16,8 +16,6 @@ class MemberEntity(
 	@Enumerated(value = EnumType.STRING)
 	var role: UserRole
 ) {
-	fun isSamePassword(password: String) = this.password == password
-
 	companion object {
 		fun of(dto: SignDto, role: UserRole) = MemberEntity(
 			memberId = dto.id!!,

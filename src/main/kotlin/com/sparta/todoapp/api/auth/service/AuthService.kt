@@ -2,6 +2,7 @@ package com.sparta.todoapp.api.auth.service
 
 import com.sparta.todoapp.common.member.auth.dto.SignDto
 import com.sparta.todoapp.common.member.auth.jwt.JwtPlugin
+import com.sparta.todoapp.common.member.exception.PasswordNotEqualException
 import com.sparta.todoapp.common.member.service.MemberService
 import com.sparta.todoapp.common.member.type.UserRole
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -14,13 +15,15 @@ class AuthService(
 	private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
 	fun signUp(signDto: SignDto) =
-		memberService.addMember(signDto, UserRole.MEMBER)
+		signDto.copy(password = bCryptPasswordEncoder.encode(signDto.password))
+			.let { memberService.addMember(it, UserRole.MEMBER) }
+
 
 
 	fun signIn(signDto: SignDto) =
 		memberService.getMember(signDto.id!!)
-			.takeIf { it.isSamePassword(bCryptPasswordEncoder.encode(signDto.password!!)) }
+			.takeIf { bCryptPasswordEncoder.matches(signDto.password, it.password) }
 			?.let { jwtPlugin.generateAccessToken(it.memberId, it.role.name) }
-			?: TODO("비밀번호가 일치하지 않습니다.")
+			?: throw PasswordNotEqualException("비밀번호가 일치하지 않습니다.")
 
 }
