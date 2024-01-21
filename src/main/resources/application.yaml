@@ -1,16 +1,16 @@
 server:
   port: 9001
 
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: debug
-        orm:
-          jdbc:
-            bind: trace
-      springframework:
-        security: debug
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        SQL: debug
+#        orm:
+#          jdbc:
+#            bind: trace
+#      springframework:
+#        security: debug
 
 spring:
   jpa:

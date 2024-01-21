@@ -8,13 +8,14 @@ import jakarta.persistence.*
 @Table(name = "member")
 class MemberEntity(
 	@Id @Column(name = "member_id", unique = true)
-	var memberId: String,
+	val memberId: String,
 
 	@Column(name = "password", nullable = false)
 	var password: String,
 
 	@Enumerated(value = EnumType.STRING)
 	var role: UserRole
+
 ) {
 	companion object {
 		fun of(dto: SignDto, role: UserRole) = MemberEntity(
