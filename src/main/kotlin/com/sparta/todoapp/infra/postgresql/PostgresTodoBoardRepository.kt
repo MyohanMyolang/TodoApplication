@@ -2,7 +2,6 @@ package com.sparta.todoapp.infra.postgresql
 
 import com.sparta.todoapp.domain.todo.board.entity.TodoBoardEntity
 import com.sparta.todoapp.domain.todo.board.repository.ITodoBoardRepository
-import com.sparta.todoapp.domain.todo.board.repository.TodoBoardEntityRepository
 import org.springframework.stereotype.Repository
 
 @Repository

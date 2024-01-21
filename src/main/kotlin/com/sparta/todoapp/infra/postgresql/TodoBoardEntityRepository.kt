@@ -1,4 +1,4 @@
-package com.sparta.todoapp.domain.todo.board.repository
+package com.sparta.todoapp.infra.postgresql
 
 import com.sparta.todoapp.domain.todo.board.entity.TodoBoardEntity
 import org.springframework.data.jpa.repository.JpaRepository
